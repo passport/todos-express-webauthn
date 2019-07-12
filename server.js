@@ -5,7 +5,7 @@ var passport = require('passport');
 
 var indexRouter = require('./routes/index');
 //var loginRouter = require('./routes/login');
-//var accountRouter = require('./routes/account');
+var accountRouter = require('./routes/account');
 
 // Create a new Express application.
 var app = express();
@@ -17,7 +17,7 @@ app.set('view engine', 'ejs');
 // Use application-level middleware for common functionality, including
 // logging, parsing, and session handling.
 app.use(require('morgan')('combined'));
-app.use(require('body-parser').urlencoded({ extended: true }));
+app.use(require('body-parser').json());
 app.use(require('express-session')({ secret: 'keyboard cat', resave: false, saveUninitialized: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -28,6 +28,6 @@ app.use(passport.session());
 
 app.use('/', indexRouter);
 //app.use('/', loginRouter);
-//app.use('/account', accountRouter);
+app.use('/account', accountRouter);
 
 app.listen(3000);
