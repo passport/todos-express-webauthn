@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Passport</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <%- include('header') -%>
+  <% if (!user) { %>
+  	<h1>Hello.</h1>
+  <% } else { %>
+  	<h1>Hello, <%= user.username %>.</h1>
+  <% } %>
+    <p>
+      Welcome to Passport! This app is an example of how to implement Web
+      Authentication.  Follow along with the tutorial or view the <a href="https://github.com/passport/express-4.x-webauthn-example">source code</a>.
+    </p>
+  </body>
+</html>

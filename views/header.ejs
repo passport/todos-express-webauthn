@@ -1,0 +1,10 @@
+<header>
+  <ul>
+  <% if (user) { %>
+    <li><a href="/account"><%= user.displayName %></a></li>
+    <li><a href="/logout">Log out</a></li>
+  <% } else { %>
+    <li><a href="/login">Log in</a></li>
+  <% } %>
+  </ul>
+</header>
