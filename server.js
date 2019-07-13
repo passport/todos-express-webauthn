@@ -4,7 +4,7 @@ var passport = require('passport');
 
 
 var indexRouter = require('./routes/index');
-//var loginRouter = require('./routes/login');
+var loginRouter = require('./routes/login');
 var accountRouter = require('./routes/account');
 
 // Create a new Express application.
@@ -27,7 +27,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use('/', indexRouter);
-//app.use('/', loginRouter);
+app.use('/', loginRouter);
 app.use('/account', accountRouter);
 
 app.listen(3000);
