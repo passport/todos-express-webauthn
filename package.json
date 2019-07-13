@@ -19,6 +19,7 @@
     "url": "https://github.com/passport/express-4.x-webauthn-example/issues"
   },
   "dependencies": {
+    "base64url": "^3.0.1",
     "body-parser": "^1.19.0",
     "connect-ensure-login": "^0.1.1",
     "ejs": "^2.6.2",

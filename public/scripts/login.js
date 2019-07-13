@@ -18,7 +18,8 @@ function publicKeyCredentialToJSON(cred) {
   }
 
   if (cred instanceof ArrayBuffer) {
-      return _arrayBufferToBase64(cred)
+    return base64url.encode(cred)
+      //return _arrayBufferToBase64(cred)
   }
 
   if (cred instanceof Object) {

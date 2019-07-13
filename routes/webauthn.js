@@ -1,5 +1,6 @@
 var express = require('express');
 var passport = require('passport');
+var base64url = require('base64url');
 var router = express.Router();
 
 router.post('/request', function(req, res, next) {
@@ -23,11 +24,18 @@ router.post('/request', function(req, res, next) {
   res.json(opts);
 });
 
-router.post('/response', function(req, res, next) {
-  console.log('RESPONSE!');
-  console.log(req.headers);
-  console.log(req.body);
-  
-});
+router.post('/response',
+  function(req, res, next) {
+    console.log('RESPONSE!');
+    console.log(req.headers);
+    console.log(req.body);
+    
+    var response = req.body.response;
+    var clientData = JSON.parse(base64url.decode(response.clientDataJSON));
+    console.log(clientData);
+    
+    next();
+  },
+  passport.authenticate('webauthn', { failureRedirect: '/login' }));
 
 module.exports = router;

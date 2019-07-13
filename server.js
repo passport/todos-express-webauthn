@@ -1,6 +1,10 @@
 var express = require('express');
 var path = require('path');
 var passport = require('passport');
+var Strategy = require('passport-webauthentication').Strategy;
+
+
+passport.use(new Strategy());
 
 
 var indexRouter = require('./routes/index');
