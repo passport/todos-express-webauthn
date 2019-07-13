@@ -5,6 +5,7 @@ var passport = require('passport');
 
 var indexRouter = require('./routes/index');
 var loginRouter = require('./routes/login');
+var webauthnRouter = require('./routes/webauthn');
 var accountRouter = require('./routes/account');
 
 // Create a new Express application.
@@ -28,6 +29,7 @@ app.use(passport.session());
 
 app.use('/', indexRouter);
 app.use('/', loginRouter);
+app.use('/webauthn', webauthnRouter);
 app.use('/account', accountRouter);
 
 app.listen(3000);

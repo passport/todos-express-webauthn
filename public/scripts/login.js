@@ -42,7 +42,7 @@ window.onload = function() {
     console.log('login...');
     
     var xhr = new XMLHttpRequest();
-    xhr.open('POST', '/challenge', true);
+    xhr.open('POST', '/webauthn/request', true);
     xhr.onreadystatechange = function() {
       console.log('READY STATE CHANGE!')
       console.log(this.readyState);
@@ -66,7 +66,7 @@ window.onload = function() {
             console.log(response)
           
             var xhr = new XMLHttpRequest();
-            xhr.open('POST', '/response', true);
+            xhr.open('POST', '/webauthn/response', true);
             xhr.onreadystatechange = function() {
               console.log('REGISTER READY STATE CHANGE!')
               console.log(this.readyState);
