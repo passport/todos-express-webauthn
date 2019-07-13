@@ -28,4 +28,11 @@ router.post('/challenge', function(req, res, next) {
   res.json(opts);
 });
 
+router.post('/response', function(req, res, next) {
+  console.log('RESPONSE!');
+  console.log(req.headers);
+  console.log(req.body);
+  
+});
+
 module.exports = router;

@@ -64,6 +64,20 @@ window.onload = function() {
         navigator.credentials.get({ publicKey: json })
           .then(function(response) {
             console.log(response)
+          
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/response', true);
+            xhr.onreadystatechange = function() {
+              console.log('REGISTER READY STATE CHANGE!')
+              console.log(this.readyState);
+              console.log(this.status);
+              console.log(this.responseText)
+            };
+            
+            
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.send(JSON.stringify(publicKeyCredentialToJSON(response)));
+          
           })
           .catch(function(err) {
             console.log(err);
