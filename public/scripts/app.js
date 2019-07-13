@@ -15,6 +15,16 @@ window.onload = function() {
       if (this.readyState === XMLHttpRequest.DONE) {
         console.log('DONE!');
         console.log(this.responseText)
+        
+        var json = JSON.parse(this.responseText);
+        
+        
+        var enc = new TextEncoder(); // always utf-8
+        json.challenge = enc.encode(json.challenge); // encode to ArrayBuffer
+        json.user.id = enc.encode(json.user.id); // encode to ArrayBuffer
+        
+        navigator.credentials.create({ publicKey: json })
+        
       }
     };
     
