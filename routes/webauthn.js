@@ -4,6 +4,7 @@ var cose2jwk = require('cose-to-jwk');
 var jwk2pem = require('jwk-to-pem');
 var cbor = require('cbor');
 var base64url = require('base64url');
+var db = require('../db');
 var router = express.Router();
 
 router.post('/request', function(req, res, next) {
@@ -120,8 +121,11 @@ function saveToDB(body) {
   
   
   var authnr = {
-    externalID: body.id
+    externalID: body.id,
+    publicKey: pem,
+    userID: '1'
   };
+  
   
   switch (attestationObject.fmt) {
   case 'none':
@@ -130,9 +134,32 @@ function saveToDB(body) {
   }
   
   
+  
+  
   console.log(authnr)
+  
+  db.post(authnr, function callback(err, result) {
+    console.log(err);
+    console.log(result);
+    
+    /*
+{ externalID:
+   'jWcLBKE7CnLmJTecFZNTSFnWyaokRzpu3cg-b1qMBweUpCHMPhZ9MVL4oVFI3Vb4_K-d4wJoxfjjZ4uU17xNQA',
+  publicKey:
+   '-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEYk0IJlg+EpjWmsSkV0K3/KdeJRI6\n2ABcPAflwTwqXXzTLDj9Sq6PR0pZR3n1ydJHIFSbozFTfLGbl44naii6LQ==\n-----END PUBLIC KEY-----\n',
+  userID: '1' }
+    */
+    
+    /*
+{ ok: true,
+  id: '9cf03ba5-0c04-43e7-a921-ed9fd52e2dcd',
+  rev: '1-ea801a943c930ee5caf3cc04f8e6117f' }
+    */
+    
+  });
 }
 
+/*
 saveToDB({ rawId:
    'jWcLBKE7CnLmJTecFZNTSFnWyaokRzpu3cg-b1qMBweUpCHMPhZ9MVL4oVFI3Vb4_K-d4wJoxfjjZ4uU17xNQA',
   response:
@@ -145,6 +172,7 @@ saveToDB({ rawId:
   id:
    'jWcLBKE7CnLmJTecFZNTSFnWyaokRzpu3cg-b1qMBweUpCHMPhZ9MVL4oVFI3Vb4_K-d4wJoxfjjZ4uU17xNQA',
   type: 'public-key' })
+*/
 
 router.post('/response',
   function(req, res, next) {

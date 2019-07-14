@@ -2,6 +2,7 @@ var express = require('express');
 var path = require('path');
 var passport = require('passport');
 var Strategy = require('passport-webauthentication').Strategy;
+var db = require('./db')
 
 
 passport.use(new Strategy(
@@ -9,14 +10,21 @@ passport.use(new Strategy(
     console.log('WEB AUTHN VERIFY');
     console.log(id);
     
-    var pk = "-----BEGIN PUBLIC KEY-----\n" + 
-'MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEYk0IJlg+EpjWmsSkV0K3/KdeJRI6\n' + 
-'2ABcPAflwTwqXXzTLDj9Sq6PR0pZR3n1ydJHIFSbozFTfLGbl44naii6LQ==\n' +
-'-----END PUBLIC KEY-----\n'
+    var query = {
+      selector: { externalID: id }
+    };
     
+    console.log(query);
     
-    return cb(null, { name: 'John Doe'}, pk)
+    db.find(query, function(err, result) {
+      console.log(err);
+      console.log(result);
     
+      if (err) { return cb(err); }
+      var doc = result.docs[0];
+    
+      return cb(null, { name: 'John Doe'}, doc.publicKey);
+    });
   })
 );
 
