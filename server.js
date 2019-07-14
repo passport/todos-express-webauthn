@@ -4,7 +4,21 @@ var passport = require('passport');
 var Strategy = require('passport-webauthentication').Strategy;
 
 
-passport.use(new Strategy());
+passport.use(new Strategy(
+  function verify(id, cb) {
+    console.log('WEB AUTHN VERIFY');
+    console.log(id);
+    
+    var pk = "-----BEGIN PUBLIC KEY-----\n" + 
+'MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEYk0IJlg+EpjWmsSkV0K3/KdeJRI6\n' + 
+'2ABcPAflwTwqXXzTLDj9Sq6PR0pZR3n1ydJHIFSbozFTfLGbl44naii6LQ==\n' +
+'-----END PUBLIC KEY-----\n'
+    
+    
+    return cb(null, { name: 'John Doe'}, pk)
+    
+  })
+);
 
 
 var indexRouter = require('./routes/index');
