@@ -23,7 +23,22 @@ passport.use(new Strategy(
       if (err) { return cb(err); }
       var doc = result.docs[0];
     
-      return cb(null, { name: 'John Doe'}, doc.publicKey);
+      db.get(doc.userID, function(err, result) {
+        console.log('GOT USER ID!');
+        console.log(err);
+        console.log(result);
+        
+        var user = {
+          id: result._id,
+          username: result.username,
+          displayName: result.displayName
+        }
+        return cb(null, user, doc.publicKey);
+        
+      });
+    
+    
+      //return cb(null, { name: 'John Doe'}, doc.publicKey);
     });
   })
 );
