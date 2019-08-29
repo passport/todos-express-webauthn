@@ -44,6 +44,11 @@ router.post('/response',
     
     next();
   },
-  passport.authenticate('webauthn', { failureRedirect: '/login' }));
+  passport.authenticate('webauthn', { failureRedirect: '/login' }),
+  function(req, res, next) {
+    console.log('AUTHENTICATED!');
+    //res.redirect('/');
+    console.log(res.json({ ok: true }));
+  });
 
 module.exports = router;

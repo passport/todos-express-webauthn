@@ -64,6 +64,10 @@ window.onload = function() {
               console.log(this.readyState);
               console.log(this.status);
               console.log(this.responseText)
+              
+              if (this.readyState === XMLHttpRequest.DONE) {
+                window.location = '/';
+              }
             };
             
             xhr.setRequestHeader('Content-Type', 'application/json');

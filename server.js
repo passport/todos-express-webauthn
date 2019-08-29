@@ -43,6 +43,32 @@ passport.use(new Strategy(
   })
 );
 
+passport.serializeUser(function(user, cb) {
+  cb(null, user.id);
+});
+
+passport.deserializeUser(function(id, cb) {
+  db.get(id, function(err, doc) {
+    // TODO: handle 'not_found' error
+    if (err) { return cb(err); }
+    
+    var user = {
+      id: doc._id,
+      username: doc.username,
+      displayName: doc.displayName
+    }
+    return cb(null, user);
+  });
+  
+  
+  /*
+  db.users.findById(id, function (err, user) {
+    if (err) { return cb(err); }
+    cb(null, user);
+  });
+  */
+});
+
 
 var indexRouter = require('./routes/index');
 var loginRouter = require('./routes/login');
