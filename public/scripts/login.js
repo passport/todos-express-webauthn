@@ -37,20 +37,12 @@ function publicKeyCredentialToJSON(cred) {
 
 
 window.onload = function() {
-  console.log('loaded...');
-  
   document.getElementById('login').addEventListener('click', function(e) {
-    console.log('login...');
-    
     var xhr = new XMLHttpRequest();
     xhr.open('POST', '/webauthn/request', true);
     xhr.onreadystatechange = function() {
-      console.log('READY STATE CHANGE!')
-      console.log(this.readyState);
-      console.log(this.status);
     
       if (this.readyState === XMLHttpRequest.DONE) {
-        console.log('DONE!');
         console.log(this.responseText)
         
         var json = JSON.parse(this.responseText);
@@ -60,7 +52,7 @@ window.onload = function() {
         //json.allowCredentials[0].id = enc.encode(json.allowCredentials[0].id); // encode to ArrayBuffer
         json.allowCredentials[0].id = base64url.decode(json.allowCredentials[0].id);
         
-        console.log(json);
+        //console.log(json);
         
         navigator.credentials.get({ publicKey: json })
           .then(function(response) {
@@ -69,26 +61,20 @@ window.onload = function() {
             var xhr = new XMLHttpRequest();
             xhr.open('POST', '/webauthn/response', true);
             xhr.onreadystatechange = function() {
-              console.log('REGISTER READY STATE CHANGE!')
               console.log(this.readyState);
               console.log(this.status);
               console.log(this.responseText)
             };
             
-            
             xhr.setRequestHeader('Content-Type', 'application/json');
             xhr.send(JSON.stringify(publicKeyCredentialToJSON(response)));
-          
           })
           .catch(function(err) {
             console.log(err);
             console.log(err.code);
             console.log(err.message);
-          })
-        
+          });
       }
-    
-    
     };
     
     xhr.setRequestHeader('Content-Type', 'application/json');
