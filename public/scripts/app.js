@@ -49,6 +49,8 @@ window.onload = function() {
         
         var json = JSON.parse(this.responseText);
         
+        var userID = json.user.id;
+        
         var enc = new TextEncoder(); // always utf-8
         json.challenge = enc.encode(json.challenge); // encode to ArrayBuffer
         json.user.id = enc.encode(json.user.id); // encode to ArrayBuffer
@@ -67,6 +69,8 @@ window.onload = function() {
             };
             
             xhr.setRequestHeader('Content-Type', 'application/json');
+            // TODO: Remove this in favor of session
+            xhr.setRequestHeader('X-User-ID', userID);
             xhr.send(JSON.stringify(publicKeyCredentialToJSON(response)));
           })
           .catch(function(err) {

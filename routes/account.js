@@ -1,5 +1,9 @@
 var express = require('express');
 var db = require('../db');
+var cose2jwk = require('cose-to-jwk');
+var jwk2pem = require('jwk-to-pem');
+var cbor = require('cbor');
+var base64url = require('base64url');
 var router = express.Router();
 
 /* GET users listing. */
@@ -113,9 +117,14 @@ function parseMakeCredAuthData(buffer) {
   */
 }
 
-function saveToDB(body) {
+function saveToDB(body, userID, cb) {
   console.log('save to DB!');
   console.log(body);
+  
+  var response = body.response;
+  
+  //var clientData = JSON.parse(base64url.decode(response.clientDataJSON));
+  //console.log(clientData);
   
   var response = body.response;
   var clientData = JSON.parse(base64url.decode(response.clientDataJSON));
@@ -141,7 +150,7 @@ function saveToDB(body) {
   var authnr = {
     externalID: body.id,
     publicKey: pem,
-    userID: '1'
+    userID: userID
   };
   
   
@@ -199,8 +208,22 @@ router.post('/credentials', function(req, res, next) {
   console.log(req.headers);
   console.log(req.body);
   
+  var userID = req.header('X-User-ID');
   
+  saveToDB(req.body, userID, function(err, result) {
+    // TODO
+  });
 });
 
+/*
+saveToDB({ rawId: 'smDYGHDRNku6nD9klRDRPnyNI_wLnZ_b6TYj6dWrO1t92jk36ZKOMxSQ5aoY6nQtpbU0b4Es6EBQWSF55FaRLg',
+  response: 
+   { attestationObject: 'o2NmbXRkbm9uZWdhdHRTdG10oGhhdXRoRGF0YVjESZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2NBAAAAAAAAAAAAAAAAAAAAAAAAAAAAQLJg2Bhw0TZLupw_ZJUQ0T58jSP8C52f2-k2I-nVqztbfdo5N-mSjjMUkOWqGOp0LaW1NG-BLOhAUFkheeRWkS6lAQIDJiABIVggxqrqJVA-HCbAA-EUuLR-AVz5By9mzAopGEkQzRE38qYiWCBQ_SuFwlnIF-XQzy5jOXqqWrrV4JlE-ItDkz0KM7SCbA',
+     getTransports: {},
+     clientDataJSON: 'eyJjaGFsbGVuZ2UiOiJNVEl6TkEiLCJvcmlnaW4iOiJodHRwOi8vbG9jYWxob3N0OjMwMDAiLCJ0eXBlIjoid2ViYXV0aG4uY3JlYXRlIn0' },
+  getClientExtensionResults: {},
+  id: 'smDYGHDRNku6nD9klRDRPnyNI_wLnZ_b6TYj6dWrO1t92jk36ZKOMxSQ5aoY6nQtpbU0b4Es6EBQWSF55FaRLg',
+  type: 'public-key' })
+*/
 
 module.exports = router;

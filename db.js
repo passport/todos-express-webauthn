@@ -15,6 +15,7 @@ idx.then(function(ok) {
 })
 */
 
+
 db.info().then(function (info) {
   console.log(info);
   
@@ -22,5 +23,6 @@ db.info().then(function (info) {
     console.log(info.rows);
   })
 })
+
 
 exports = module.exports = db;
