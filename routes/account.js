@@ -6,6 +6,13 @@ var cbor = require('cbor');
 var base64url = require('base64url');
 var router = express.Router();
 
+
+router.get('/',
+  require('connect-ensure-login').ensureLoggedIn(),
+  function(req, res, next) {
+    res.render('profile', { user: req.user });
+  });
+
 /* GET users listing. */
 router.get('/new', function(req, res, next) {
   res.render('register');
@@ -43,7 +50,8 @@ router.post('/', function(req, res, next) {
         {
           type: "public-key", alg: -7 // "ES256" IANA COSE Algorithms registry
         }
-      ]
+      ],
+      attestation: 'direct'
     }
     
     res.json(opts);
