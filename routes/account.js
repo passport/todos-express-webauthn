@@ -49,7 +49,7 @@ router.post('/', function(req, res, next) {
 
 
 
-router.post('/credential', function(req, res, next) {
+router.post('/credentials', function(req, res, next) {
   console.log('CREDENTIAL!');
   console.log(req.headers);
   console.log(req.body);
