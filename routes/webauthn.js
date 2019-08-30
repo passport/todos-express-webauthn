@@ -48,7 +48,7 @@ router.post('/response',
   function(req, res, next) {
     console.log('AUTHENTICATED!');
     //res.redirect('/');
-    console.log(res.json({ ok: true }));
+    res.json({ ok: true });
   });
 
 module.exports = router;

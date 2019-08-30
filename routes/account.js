@@ -176,40 +176,8 @@ function saveToDB(body, userID, cb) {
   db.post(authnr, function callback(err, result) {
     console.log(err);
     console.log(result);
-    
-    /*
-{ externalID:
-   'jWcLBKE7CnLmJTecFZNTSFnWyaokRzpu3cg-b1qMBweUpCHMPhZ9MVL4oVFI3Vb4_K-d4wJoxfjjZ4uU17xNQA',
-  publicKey:
-   '-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEYk0IJlg+EpjWmsSkV0K3/KdeJRI6\n2ABcPAflwTwqXXzTLDj9Sq6PR0pZR3n1ydJHIFSbozFTfLGbl44naii6LQ==\n-----END PUBLIC KEY-----\n',
-  userID: '1' }
-    */
-    
-    /*
-{ ok: true,
-  id: '9cf03ba5-0c04-43e7-a921-ed9fd52e2dcd',
-  rev: '1-ea801a943c930ee5caf3cc04f8e6117f' }
-    */
-    
   });
 }
-
-/*
-saveToDB({ rawId:
-   'jWcLBKE7CnLmJTecFZNTSFnWyaokRzpu3cg-b1qMBweUpCHMPhZ9MVL4oVFI3Vb4_K-d4wJoxfjjZ4uU17xNQA',
-  response:
-   { attestationObject:
-      'o2NmbXRkbm9uZWdhdHRTdG10oGhhdXRoRGF0YVjESZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2NBAAAAAAAAAAAAAAAAAAAAAAAAAAAAQI1nCwShOwpy5iU3nBWTU0hZ1smqJEc6bt3IPm9ajAcHlKQhzD4WfTFS-KFRSN1W-PyvneMCaMX442eLlNe8TUClAQIDJiABIVggYk0IJlg-EpjWmsSkV0K3_KdeJRI62ABcPAflwTwqXXwiWCDTLDj9Sq6PR0pZR3n1ydJHIFSbozFTfLGbl44naii6LQ',
-     getTransports: {},
-     clientDataJSON:
-      'eyJjaGFsbGVuZ2UiOiJNVEl6TkEiLCJvcmlnaW4iOiJodHRwOi8vbG9jYWxob3N0OjMwMDAiLCJ0eXBlIjoid2ViYXV0aG4uY3JlYXRlIn0' },
-  getClientExtensionResults: {},
-  id:
-   'jWcLBKE7CnLmJTecFZNTSFnWyaokRzpu3cg-b1qMBweUpCHMPhZ9MVL4oVFI3Vb4_K-d4wJoxfjjZ4uU17xNQA',
-  type: 'public-key' })
-*/
-
-
 
 router.post('/credentials', function(req, res, next) {
   console.log('CREDENTIAL!');
