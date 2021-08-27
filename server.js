@@ -1,7 +1,6 @@
 var express = require('express');
 var path = require('path');
 var passport = require('passport');
-var Strategy = require('passport-webauthentication').Strategy;
 var db = require('./db')
 
 
@@ -14,6 +13,8 @@ var accountRouter = require('./routes/account');
 
 // Create a new Express application.
 var app = express();
+
+require('./boot/auth')();
 
 // Configure view engine to render EJS templates.
 app.set('views', __dirname + '/views');

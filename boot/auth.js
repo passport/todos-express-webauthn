@@ -1,4 +1,5 @@
 var passport = require('passport');
+var Strategy = require('passport-webauthentication').Strategy;
 
 
 module.exports = function() {
