@@ -5,69 +5,6 @@ var Strategy = require('passport-webauthentication').Strategy;
 var db = require('./db')
 
 
-passport.use(new Strategy(
-  function verify(id, cb) {
-    console.log('WEB AUTHN VERIFY');
-    console.log(id);
-    
-    var query = {
-      selector: { externalID: id }
-    };
-    
-    console.log(query);
-    
-    db.find(query, function(err, result) {
-      console.log(err);
-      console.log(result);
-    
-      if (err) { return cb(err); }
-      var doc = result.docs[0];
-    
-      db.get(doc.userID, function(err, result) {
-        console.log('GOT USER ID!');
-        console.log(err);
-        console.log(result);
-        
-        var user = {
-          id: result._id,
-          username: result.username,
-          displayName: result.displayName
-        }
-        return cb(null, user, doc.publicKey);
-        
-      });
-    
-    
-      //return cb(null, { name: 'John Doe'}, doc.publicKey);
-    });
-  })
-);
-
-passport.serializeUser(function(user, cb) {
-  cb(null, user.id);
-});
-
-passport.deserializeUser(function(id, cb) {
-  db.get(id, function(err, doc) {
-    // TODO: handle 'not_found' error
-    if (err) { return cb(err); }
-    
-    var user = {
-      id: doc._id,
-      username: doc.username,
-      displayName: doc.displayName
-    }
-    return cb(null, user);
-  });
-  
-  
-  /*
-  db.users.findById(id, function (err, user) {
-    if (err) { return cb(err); }
-    cb(null, user);
-  });
-  */
-});
 
 
 var indexRouter = require('./routes/index');
