@@ -25,6 +25,13 @@ app.set('view engine', 'ejs');
 app.use(require('morgan')('combined'));
 app.use(require('body-parser').json());
 app.use(require('express-session')({ secret: 'keyboard cat', resave: false, saveUninitialized: false }));
+app.use(function(req, res, next) {
+  var msgs = req.session.messages || [];
+  res.locals.messages = msgs;
+  res.locals.hasMessages = !! msgs.length;
+  req.session.messages = [];
+  next();
+});
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Initialize Passport and restore authentication state, if any, from the

@@ -2,23 +2,53 @@
 <html>
   <head>
     <title>Passport</title>
+    <link rel="stylesheet" href="/stylesheets/pico.css">
     <link rel='stylesheet' href='/stylesheets/style.css' />
     <script type="text/javascript" src="/scripts/base64url-arraybuffer.js"></script>
     <script type="text/javascript" src="/scripts/login.js"></script>
+    <style>
+      article div:nth-of-type(2) {
+        display: none;
+        background-color: #374956;
+        background-image: url("https://source.unsplash.com/QgR5pKDoCd0/1000x1200");
+        background-position: center;
+        background-size: cover;
+      }
+      @media (min-width: 992px) {
+        .grid > div:nth-of-type(2) {
+          display: block;
+        }
+      }
+    </style>
   </head>
   <body>
-  <form action="/login" method="post">
-    <div>
-      <label>Username:</label>
-      <input id="username" type="text" name="username"/><br/>
-    </div>
-    <div>
-      <input id="login" type="submit" value="Submit"/>
-    </div>
-  </form>
-  
-  <p>
-    Or <a href="/account/new">create an account</a>
-  </p>
+    
+    <main class="container">
+      
+      <article class="grid">
+        <div>
+          <% if (hasMessages) { %>
+            <ul>
+            <% messages.forEach(function(message){ %>
+              <li><%= message %></li>
+            <% }); %>
+            </ul>
+          <% } %>
+          
+          <hgroup>
+            <h1>Sign in</h1>
+          </hgroup>
+          <form action="/login/password" method="post">
+            <input type="text" name="username" placeholder="Username">
+            <button id="login" type="submit" class="contrast">Sign in</button>
+          </form>
+        </div>
+        <div></div>
+        <div>
+          or <a href="/users/new">Create an account</a>
+        </div>
+      </article>
+    </main>
+    
   </body>
 </html>
