@@ -10,39 +10,16 @@ module.exports = function() {
     function verify(id, cb) {
       console.log('WEB AUTHN VERIFY');
       console.log(id);
-    
-      /*
-      var query = {
-        selector: { externalID: id }
-      };
-    
-      console.log(query);
-    
-      db.find(query, function(err, result) {
-        console.log(err);
-        console.log(result);
-    
+      
+      db.get('SELECT rowid AS id, * FROM public_key_credentials WHERE external_id = ?', [ id ], function(err, row) {
         if (err) { return cb(err); }
-        var doc = result.docs[0];
-    
-        db.get(doc.userID, function(err, result) {
-          console.log('GOT USER ID!');
-          console.log(err);
-          console.log(result);
+        if (!row) { return cb(null, false); }
         
-          var user = {
-            id: result._id,
-            username: result.username,
-            displayName: result.displayName
-          }
-          return cb(null, user, doc.publicKey);
+        console.log(row);
         
-        });
-    
-    
-        //return cb(null, { name: 'John Doe'}, doc.publicKey);
+        return cb(null, { name: 'John Doe'}, row.public_key);
+        
       });
-      */
     }, function register(id, publicKey, cb) {
       console.log('REGISTER WEBAUTHN!');
       console.log(id);
