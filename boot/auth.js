@@ -1,5 +1,6 @@
 var passport = require('passport');
 var Strategy = require('passport-webauthentication').Strategy;
+var db = require('../db');
 
 
 module.exports = function() {
@@ -42,10 +43,23 @@ module.exports = function() {
         //return cb(null, { name: 'John Doe'}, doc.publicKey);
       });
       */
-    }, function register(id, pem, cb) {
+    }, function register(id, publicKey, cb) {
       console.log('REGISTER WEBAUTHN!');
       console.log(id);
-      console.log(pem)
+      console.log(publicKey)
+      
+      db.run('INSERT INTO public_key_credentials (external_id, public_key) VALUES (?, ?)', [
+        id,
+        publicKey
+      ], function(err) {
+        console.log(err);
+        
+        if (err) { return next(err); }
+      
+          
+        // TODO: Return true
+      });
+      
     })
   );
   
