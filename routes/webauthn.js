@@ -21,34 +21,17 @@ router.post('/request', function(req, res, next) {
       type: 'public-key',
       //id: 'p5XN9H3kPWVymj0GcGDZtElg2Y2g4AISMWyUjjz3HEZBeHjamcknUsyTDy15zEGRXJCsyFVAEQ8Aq8_PbdkZnw',
       //id: 'jWcLBKE7CnLmJTecFZNTSFnWyaokRzpu3cg-b1qMBweUpCHMPhZ9MVL4oVFI3Vb4_K-d4wJoxfjjZ4uU17xNQA',
-      id: 'Vj1ZA6yKxblqKMhVduxJdOUt9tdz6333z7vygjM6qj8ZMc07m3tyGHwGYRDBOPl1PGRqHxdRQraYbaTjC7p0NQ',
+      //id: 'Vj1ZA6yKxblqKMhVduxJdOUt9tdz6333z7vygjM6qj8ZMc07m3tyGHwGYRDBOPl1PGRqHxdRQraYbaTjC7p0NQ',
+      id: 'JYrR3EvvQJNqG0i_OwJckOkbzq4YJWviotG4hig9wA_Qdxm-eBEHfsYqBJKTtXMasL-RD9CFOlcag48icK3E8Q',
+      //id: 'AIJBqkpwDr_4baNTt2_u_kG-sGqZnr4WZ63y911uY9qB6u6JTcB-9MQkyQzruTOBRi9vKluqAZqBWio2tFem-SgrUD7RI7i_Bpajs5N6uG_cCdycJwE-4Xjt',
+      //id: 'GU0lmsssQL3nKuu3Q5YtBTVfTLUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
       //id: '123',
       transports: ['usb', 'nfc', 'ble']
+      //transports: ['usb', 'nfc', 'ble']
     } ]
   };
   
   res.json(opts);
 });
-
-router.post('/response',
-  function(req, res, next) {
-    console.log('RESPONSE!');
-    console.log(req.headers);
-    console.log(req.body);
-    
-    // https://www.w3.org/TR/webauthn/#registering-a-new-credential
-    
-    var response = req.body.response;
-    var clientData = JSON.parse(base64url.decode(response.clientDataJSON));
-    console.log(clientData);
-    
-    next();
-  },
-  passport.authenticate('webauthn', { failureRedirect: '/login' }),
-  function(req, res, next) {
-    console.log('AUTHENTICATED!');
-    //res.redirect('/');
-    res.json({ ok: true });
-  });
 
 module.exports = router;
