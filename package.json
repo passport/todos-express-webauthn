@@ -32,7 +32,6 @@
     "jws": "^3.2.2",
     "morgan": "^1.9.1",
     "passport": "^0.4.0",
-    "pouchdb": "^7.1.1",
-    "pouchdb-find": "^7.1.1"
+    "sqlite3": "^5.0.2"
   }
 }

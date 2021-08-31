@@ -14,6 +14,7 @@ var accountRouter = require('./routes/account');
 // Create a new Express application.
 var app = express();
 
+require('./boot/db')();
 require('./boot/auth')();
 
 // Configure view engine to render EJS templates.

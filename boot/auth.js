@@ -42,6 +42,10 @@ module.exports = function() {
         //return cb(null, { name: 'John Doe'}, doc.publicKey);
       });
       */
+    }, function register(id, pem, cb) {
+      console.log('REGISTER WEBAUTHN!');
+      console.log(id);
+      console.log(pem)
     })
   );
   
