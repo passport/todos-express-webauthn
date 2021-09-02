@@ -28,6 +28,10 @@ function publicKeyCredentialToJSON(cred) {
       for (var key in cred) {
           obj[key] = publicKeyCredentialToJSON(cred[key])
       }
+      
+      if (cred.getTransports) {
+        obj.transports = cred.getTransports();
+      }
 
       return obj
   }
@@ -50,7 +54,7 @@ window.onload = function() {
       
       if (this.readyState === XMLHttpRequest.DONE) {
         console.log(this.responseText)
-        return;
+        //return;
         
         var json = JSON.parse(this.responseText);
         
@@ -65,7 +69,7 @@ window.onload = function() {
             console.log(response);
             
             var xhr = new XMLHttpRequest();
-            xhr.open('POST', '/account/credentials', true);
+            xhr.open('POST', '/login/public-key', true);
             xhr.onreadystatechange = function() {
               console.log('REGISTER READY STATE CHANGE!')
               console.log(this.readyState);
@@ -75,7 +79,7 @@ window.onload = function() {
             
             xhr.setRequestHeader('Content-Type', 'application/json');
             // TODO: Remove this in favor of session
-            xhr.setRequestHeader('X-User-ID', userID);
+            //xhr.setRequestHeader('X-User-ID', userID);
             xhr.send(JSON.stringify(publicKeyCredentialToJSON(response)));
           })
           .catch(function(err) {

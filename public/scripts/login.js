@@ -58,7 +58,13 @@ window.onload = function() {
         json.challenge = enc.encode(json.challenge); // encode to ArrayBuffer
         if (json.allowCredentials) {
         //json.allowCredentials[0].id = enc.encode(json.allowCredentials[0].id); // encode to ArrayBuffer
-        json.allowCredentials[0].id = base64url.decode(json.allowCredentials[0].id);
+        //json.allowCredentials[0].id = base64url.decode(json.allowCredentials[0].id);
+        
+          var i = 0, len = json.allowCredentials.length;
+          for (i = 0; i < len; ++i) {
+            json.allowCredentials[i].id = base64url.decode(json.allowCredentials[i].id);
+          }
+        
         }
       
         console.log(json);

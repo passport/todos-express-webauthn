@@ -24,6 +24,7 @@ module.exports = function() {
       console.log('REGISTER WEBAUTHN!');
       console.log(id);
       console.log(publicKey)
+      //return;
       
       db.run('INSERT INTO public_key_credentials (external_id, public_key) VALUES (?, ?)', [
         id,
