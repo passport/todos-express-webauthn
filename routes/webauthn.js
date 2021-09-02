@@ -34,4 +34,39 @@ router.post('/request', function(req, res, next) {
   res.json(opts);
 });
 
+
+router.post('/create', function(req, res, next) {
+  console.log('REGISTER!');
+  console.log(req.headers);
+  console.log(req.body);
+  
+  
+  db.run('INSERT INTO users (username, name) VALUES (?, ?)', [
+    req.body.username,
+    req.body.name
+  ], function(err) {
+    if (err) { return next(err); }
+    
+    var opts = {
+      challenge: '1234', // TODO: Make this random,
+      rp: {
+          name: "ACME Corporation"
+      },
+      user: {
+        id: this.lastID.toString(),
+        name: req.body.username,
+        displayName: req.body.name
+      },
+      pubKeyCredParams: [
+        {
+          type: "public-key", alg: -7 // "ES256" IANA COSE Algorithms registry
+        }
+      ],
+      attestation: 'direct'
+    }
+    
+    res.json(opts);
+  });
+});
+
 module.exports = router;

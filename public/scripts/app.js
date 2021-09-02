@@ -39,13 +39,18 @@ function publicKeyCredentialToJSON(cred) {
 window.onload = function() {
   
   document.getElementById('register').addEventListener('click', function(e) {
+    console.log('sign up...');
+    e.preventDefault();
+    //return;
+    
     
     var xhr = new XMLHttpRequest();
-    xhr.open('POST', '/account', true);
+    xhr.open('POST', '/webauthn/create', true);
     xhr.onreadystatechange = function() {
       
       if (this.readyState === XMLHttpRequest.DONE) {
         console.log(this.responseText)
+        return;
         
         var json = JSON.parse(this.responseText);
         
