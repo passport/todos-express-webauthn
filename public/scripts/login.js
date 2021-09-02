@@ -38,6 +38,12 @@ function publicKeyCredentialToJSON(cred) {
 
 window.onload = function() {
   document.getElementById('login').addEventListener('click', function(e) {
+    
+    
+    console.log('login...');
+    //e.preventDefault();
+    //return;
+    
     var xhr = new XMLHttpRequest();
     xhr.open('POST', '/webauthn/request', true);
     xhr.onreadystatechange = function() {
@@ -45,21 +51,26 @@ window.onload = function() {
       if (this.readyState === XMLHttpRequest.DONE) {
         console.log(this.responseText)
         
+        
         var json = JSON.parse(this.responseText);
         
         var enc = new TextEncoder(); // always utf-8
         json.challenge = enc.encode(json.challenge); // encode to ArrayBuffer
+        if (json.allowCredentials) {
         //json.allowCredentials[0].id = enc.encode(json.allowCredentials[0].id); // encode to ArrayBuffer
         json.allowCredentials[0].id = base64url.decode(json.allowCredentials[0].id);
-        
-        //console.log(json);
+        }
+      
+        console.log(json);
+        //return;
         
         navigator.credentials.get({ publicKey: json })
           .then(function(response) {
             console.log(response)
+            //return;
           
             var xhr = new XMLHttpRequest();
-            xhr.open('POST', '/webauthn/response', true);
+            xhr.open('POST', '/login/public-key', true);
             xhr.onreadystatechange = function() {
               console.log(this.readyState);
               console.log(this.status);
@@ -84,7 +95,8 @@ window.onload = function() {
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.send(JSON.stringify({
       foo: 'bar',
-      username: document.getElementById('username').value
+      username: 'alice'
+      //username: document.getElementById('username').value
     }));
     
     e.preventDefault();
