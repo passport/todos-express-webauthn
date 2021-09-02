@@ -2,23 +2,30 @@
 <html>
   <head>
     <title>Passport</title>
+    <link rel="stylesheet" href="/stylesheets/pico.css">
     <link rel='stylesheet' href='/stylesheets/style.css' />
     <script type="text/javascript" src="/scripts/base64url-arraybuffer.js"></script>
     <script type="text/javascript" src="/scripts/app.js"></script>
   </head>
+  
   <body>
-  <form action="/account" method="post">
-    <div>
-      <label>Name:</label>
-      <input id="name" type="text" name="name"/><br/>
-    </div>
-    <div>
-      <label>Username:</label>
-      <input id="username" type="text" name="username"/><br/>
-    </div>
-    <div>
-      <input id="register" type="submit" value="Submit"/>
-    </div>
-  </form>
+
+    <main class="container">
+      
+      <article class="grid">
+        <div>
+          <hgroup>
+            <h1>Sign up</h1>
+          </hgroup>
+          <form action="/users" method="post">
+            <input id="name" type="text" name="name" placeholder="Name">
+            <input id="username" type="text" name="username" placeholder="Username">
+            <button id="register" type="submit" class="contrast">Sign up</button>
+          </form>
+        </div>
+        <div></div>
+      </article>
+    </main>
+
   </body>
 </html>

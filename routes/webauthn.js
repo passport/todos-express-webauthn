@@ -26,7 +26,7 @@ router.post('/request', function(req, res, next) {
       //id: 'AIJBqkpwDr_4baNTt2_u_kG-sGqZnr4WZ63y911uY9qB6u6JTcB-9MQkyQzruTOBRi9vKluqAZqBWio2tFem-SgrUD7RI7i_Bpajs5N6uG_cCdycJwE-4Xjt',
       //id: 'GU0lmsssQL3nKuu3Q5YtBTVfTLUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
       //id: '123',
-      transports: ['usb', 'nfc', 'ble']
+      //transports: ['usb', 'nfc', 'ble']
       //transports: ['usb', 'nfc', 'ble']
     } ]
   };

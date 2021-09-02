@@ -16,9 +16,9 @@ router.post('/login/public-key',
     
     // https://www.w3.org/TR/webauthn/#registering-a-new-credential
     
-    var response = req.body.response;
-    var clientData = JSON.parse(base64url.decode(response.clientDataJSON));
-    console.log(clientData);
+    //var response = req.body.response;
+    //var clientData = JSON.parse(base64url.decode(response.clientDataJSON));
+    //console.log(clientData);
     
     next();
   },
