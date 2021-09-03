@@ -17,6 +17,8 @@ module.exports = function() {
         
         console.log(row);
         
+        // TODO: Implement a separate callback to look up the user
+        
         return cb(null, { name: 'John Doe'}, row.public_key);
         
       });
