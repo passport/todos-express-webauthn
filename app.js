@@ -1,30 +1,30 @@
 var express = require('express');
-var path = require('path');
 var passport = require('passport');
-var db = require('./db')
-
-
-
+var path = require('path');
+//var cookieParser = require('cookie-parser');
+var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
-var loginRouter = require('./routes/login');
+var authRouter = require('./routes/login');
 var webauthnRouter = require('./routes/webauthn');
 var usersRouter = require('./routes/account');
 
-// Create a new Express application.
 var app = express();
 
 require('./boot/db')();
 require('./boot/auth')();
 
-// Configure view engine to render EJS templates.
-app.set('views', __dirname + '/views');
+// view engine setup
+app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 // Use application-level middleware for common functionality, including
 // logging, parsing, and session handling.
-app.use(require('morgan')('combined'));
-app.use(require('body-parser').json());
+app.use(logger('dev'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+//app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(require('express-session')({ secret: 'keyboard cat', resave: false, saveUninitialized: false }));
 app.use(function(req, res, next) {
   var msgs = req.session.messages || [];
@@ -33,16 +33,12 @@ app.use(function(req, res, next) {
   req.session.messages = [];
   next();
 });
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Initialize Passport and restore authentication state, if any, from the
-// session.
 app.use(passport.initialize());
-app.use(passport.session());
+app.use(passport.authenticate('session'));
 
 app.use('/', indexRouter);
-app.use('/', loginRouter);
+app.use('/', authRouter);
 app.use('/webauthn', webauthnRouter);
 app.use('/users', usersRouter);
 
-app.listen(3000);
+module.exports = app;
