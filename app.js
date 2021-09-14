@@ -8,6 +8,7 @@ var indexRouter = require('./routes/index');
 var authRouter = require('./routes/login');
 var webauthnRouter = require('./routes/webauthn');
 var usersRouter = require('./routes/users');
+var myaccountRouter = require('./routes/myaccount');
 
 var app = express();
 
@@ -40,5 +41,6 @@ app.use('/', indexRouter);
 app.use('/', authRouter);
 app.use('/webauthn', webauthnRouter);
 app.use('/users', usersRouter);
+app.use('/myaccount', myaccountRouter);
 
 module.exports = app;
