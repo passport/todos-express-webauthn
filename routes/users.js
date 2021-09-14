@@ -17,7 +17,7 @@ router.get('/',
 
 /* GET users listing. */
 router.get('/new', function(req, res, next) {
-  res.render('register');
+  res.render('signup');
 });
 
 
