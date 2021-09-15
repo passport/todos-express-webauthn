@@ -32,6 +32,10 @@ function publicKeyCredentialToJSON(cred) {
       if (cred.getTransports) {
         obj.transports = cred.getTransports();
       }
+      
+      if (cred.getClientExtensionResults) {
+        obj.clientExtensionResults = cred.getClientExtensionResults();
+      }
 
       return obj
   }
@@ -40,12 +44,30 @@ function publicKeyCredentialToJSON(cred) {
 }
 
 
+// https://stackoverflow.com/questions/7542586/new-formdata-application-x-www-form-urlencoded
+function urlencodedFormData(data){
+  var s = '';
+  function encode(s) { return encodeURIComponent(s).replace(/%20/g,'+'); }
+  for (var pair of data.entries()) {
+    if (typeof pair[1]=='string') {
+      s += (s ? '&' : '') + encode(pair[0]) + '=' + encode(pair[1]);
+    }
+  }
+  return s;
+}
+
+
 window.onload = function() {
+  console.log('LOAD!');
+  
+  //return;
   
   document.getElementById('register').addEventListener('click', function(e) {
+    if (!window.PublicKeyCredential) { return; } // submit the form normally
+    
+    
     console.log('sign up...');
     e.preventDefault();
-    //return;
     
     
     var xhr = new XMLHttpRequest();
@@ -63,6 +85,9 @@ window.onload = function() {
         var enc = new TextEncoder(); // always utf-8
         json.challenge = enc.encode(json.challenge); // encode to ArrayBuffer
         json.user.id = enc.encode(json.user.id); // encode to ArrayBuffer
+        
+        console.log('CREATE WITH');
+        console.log(json)
         
         navigator.credentials.create({ publicKey: json })
           .then(function(response) {
@@ -91,13 +116,10 @@ window.onload = function() {
       }
     };
     
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.send(JSON.stringify({
-      foo: 'bar',
-      username: document.getElementById('username').value,
-      name: document.getElementById('name').value
-    }));
+    var formEl = document.querySelector('form');
+    var formData = new FormData(formEl);
     
-    e.preventDefault();
+    xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+    xhr.send(urlencodedFormData(formData));
   });
 };
