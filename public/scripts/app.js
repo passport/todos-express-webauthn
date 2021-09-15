@@ -70,8 +70,8 @@ window.onload = function() {
     e.preventDefault();
     
     
+    
     var xhr = new XMLHttpRequest();
-    xhr.open('POST', '/webauthn/create', true);
     xhr.onreadystatechange = function() {
       
       if (this.readyState === XMLHttpRequest.DONE) {
@@ -94,7 +94,7 @@ window.onload = function() {
             console.log(response);
             
             var xhr = new XMLHttpRequest();
-            xhr.open('POST', '/login/public-key', true);
+            xhr.open('POST', '/login/public-key/2', true);
             xhr.onreadystatechange = function() {
               console.log('REGISTER READY STATE CHANGE!')
               console.log(this.readyState);
@@ -118,8 +118,9 @@ window.onload = function() {
     
     var formEl = document.querySelector('form');
     var formData = new FormData(formEl);
-    
+    xhr.open('POST', formEl.action, true);
     xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+    xhr.setRequestHeader('Accept', 'application/json');
     xhr.send(urlencodedFormData(formData));
   });
 };
