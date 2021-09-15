@@ -20,6 +20,59 @@ router.get('/new', function(req, res, next) {
   res.render('signup');
 });
 
+router.post('/', function(req, res, next) {
+  db.run('INSERT INTO users (username, name) VALUES (?, ?)', [
+    req.body.username,
+    req.body.name
+  ], function(err) {
+    if (err) { return next(err); }
+    
+    var user = {
+      id: this.lastID.toString(),
+      username: req.body.username,
+      displayName: req.body.name
+    };
+    req.login(user, function(err) {
+      if (err) { return next(err); }
+      
+      res.format({
+        'application/json': function () {
+          var options = {
+            challenge: '1234', // TODO: Make this random,
+            rp: {
+              name: "ACME Corporation"
+            },
+            user: {
+              id: user.id,
+              name: user.username,
+              displayName: user.displayName
+            },
+            pubKeyCredParams: [
+              {
+                type: "public-key", alg: -7 // "ES256" IANA COSE Algorithms registry
+              }
+            ],
+            attestation: 'none',
+            authenticatorSelection: {
+              //authenticatorAttachment: "platform",
+              residentKey: 'required'
+            },
+            extensions: {
+              credProps: true
+            }
+          }
+          
+          res.send(options);
+        },
+
+        default: function () {
+          res.redirect('/enroll/public-key');
+        }
+      });
+    });
+  });
+});
+
 
 
 var USER_PRESENT = 0x01;
