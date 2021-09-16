@@ -35,17 +35,28 @@ function publicKeyCredentialToJSON(cred) {
   return cred
 }
 
+// https://stackoverflow.com/questions/7542586/new-formdata-application-x-www-form-urlencoded
+function urlencodedFormData(data){
+  var s = '';
+  function encode(s) { return encodeURIComponent(s).replace(/%20/g,'+'); }
+  for (var pair of data.entries()) {
+    if (typeof pair[1]=='string') {
+      s += (s ? '&' : '') + encode(pair[0]) + '=' + encode(pair[1]);
+    }
+  }
+  return s;
+}
+
 
 window.onload = function() {
   document.getElementById('login').addEventListener('click', function(e) {
     
     
     console.log('login...');
-    //e.preventDefault();
+    e.preventDefault();
     //return;
     
     var xhr = new XMLHttpRequest();
-    xhr.open('POST', '/webauthn/request', true);
     xhr.onreadystatechange = function() {
     
       if (this.readyState === XMLHttpRequest.DONE) {
@@ -98,13 +109,11 @@ window.onload = function() {
       }
     };
     
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.send(JSON.stringify({
-      foo: 'bar',
-      username: 'alice'
-      //username: document.getElementById('username').value
-    }));
-    
-    e.preventDefault();
+    var formEl = document.querySelector('form');
+    var formData = new FormData(formEl);
+    xhr.open('POST', formEl.action, true);
+    xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+    xhr.setRequestHeader('Accept', 'application/json');
+    xhr.send(urlencodedFormData(formData));
   });
 };
