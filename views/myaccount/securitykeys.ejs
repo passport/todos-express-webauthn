@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, viewport-fit=cover">
     <link rel="stylesheet" href="/stylesheets/pico.css">
     <link rel="stylesheet" href="/stylesheets/style.css">
-    <title>Profile</title>
+    <script type="text/javascript" src="/scripts/base64url-arraybuffer.js"></script>
+    <script type="text/javascript" src="/scripts/myaccount/security-keys.js"></script>
+    <title>My Account</title>
     <style>
 :root:not([data-theme=dark]), [data-theme=light] {
     --nav-background: rgba(255, 255, 255, 0.7);
@@ -30,28 +32,21 @@ main .grid > * {
   </head>
 
   <body>
-    <%- include('header'); -%>
+    <%- include('../header'); -%>
 
     <main class="container">
 
-      <div class="grid">
+      <div>
+        <!--<a href="/login/federated/accounts.google.com?action=link" role="button">Connect to Google</a><br/>-->
 
-        <figure>
-          <img src="/images/woman.png" width="128" height="128"/>
-        </figure>
-
-        <div>
-          <hgroup>
-            <h4><%= user.displayName %></h4>
-            <p><small><%= user.username %></small></p>
-          </hgroup>
-            
-          <% if (user.emails) { %>
-          <p><small>Email: </small><%= user.emails[0].value %></p>
-          <% } %>
-        </div>
+        <button id="new">Add New Security Key</button>
         
-        <a href="/myaccount/security-keys">Security Keys</a><br/>
+        
+        <ul>
+          <% securityKeys.forEach(function(securityKey){ %>
+            <li><%= securityKey.name; %></li>
+          <% }); %>
+        </ul>
 
       </div>
     </main>
