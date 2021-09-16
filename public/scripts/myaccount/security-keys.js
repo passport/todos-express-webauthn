@@ -1,0 +1,113 @@
+function _arrayBufferToBase64( buffer ) {
+    var binary = '';
+    var bytes = new Uint8Array( buffer );
+    var len = bytes.byteLength;
+    for (var i = 0; i < len; i++) {
+        binary += String.fromCharCode( bytes[ i ] );
+    }
+    return window.btoa( binary );
+}
+
+function publicKeyCredentialToJSON(cred) {
+  if (cred instanceof Array) {
+      var arr = [];
+      for(var i of cred)
+          arr.push(publicKeyCredentialToJSON(i));
+
+      return arr
+  }
+
+  if (cred instanceof ArrayBuffer) {
+    return base64url.encode(cred)
+      //return _arrayBufferToBase64(cred)
+  }
+
+  if (cred instanceof Object) {
+      let obj = {};
+
+      for (var key in cred) {
+          obj[key] = publicKeyCredentialToJSON(cred[key])
+      }
+      
+      if (cred.getTransports) {
+        obj.transports = cred.getTransports();
+      }
+      
+      if (cred.getClientExtensionResults) {
+        obj.clientExtensionResults = cred.getClientExtensionResults();
+      }
+
+      return obj
+  }
+
+  return cred
+}
+
+
+function createCredential() {
+  
+  
+  var xhr = new XMLHttpRequest();
+  xhr.onreadystatechange = function() {
+    
+    if (this.readyState === XMLHttpRequest.DONE) {
+      console.log(this.responseText)
+      //return;
+      
+      var json = JSON.parse(this.responseText);
+      
+      var userID = json.user.id;
+      
+      var enc = new TextEncoder(); // always utf-8
+      json.challenge = enc.encode(json.challenge); // encode to ArrayBuffer
+      json.user.id = enc.encode(json.user.id); // encode to ArrayBuffer
+      
+      console.log('CREATE WITH');
+      console.log(json)
+      
+      navigator.credentials.create({ publicKey: json })
+        .then(function(response) {
+          console.log(response);
+          
+          var xhr = new XMLHttpRequest();
+          xhr.open('POST', '/login/public-key/2', true);
+          xhr.onreadystatechange = function() {
+            console.log('REGISTER READY STATE CHANGE!')
+            console.log(this.readyState);
+            console.log(this.status);
+            console.log(this.responseText)
+          };
+          
+          xhr.setRequestHeader('Content-Type', 'application/json');
+          // TODO: Remove this in favor of session
+          //xhr.setRequestHeader('X-User-ID', userID);
+          xhr.send(JSON.stringify(publicKeyCredentialToJSON(response)));
+        })
+        .catch(function(err) {
+          console.log('ERROR');
+          console.log(err);
+          console.log(err.code);
+          console.log(err.message);
+        });
+    }
+  };
+  
+  xhr.open('POST', '/myaccount/security-keys/new', true);
+  xhr.setRequestHeader('Accept', 'application/json');
+  xhr.send();
+  
+}
+
+
+
+window.onload = function() {
+  console.log('SECURITY KEYS LOADED!');
+  
+  document.getElementById('new').addEventListener('click', function(e) {
+    e.preventDefault();
+    
+    console.log('Add new security key');
+    createCredential();
+  });
+  
+};

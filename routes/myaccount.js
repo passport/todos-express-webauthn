@@ -47,5 +47,41 @@ router.get('/security-keys',
     res.render('myaccount/securitykeys', { user: req.user });
   });
 
+router.post('/security-keys/new',
+  ensureLoggedIn(),
+  function(req, res, next) {
+    console.log('CREATE KEY FOR USER');
+    console.log(req.user);
+    
+    res.format({
+      'application/json': function () {
+        var options = {
+          challenge: '1234', // TODO: Make this random,
+          rp: {
+            name: "ACME Corporation"
+          },
+          user: {
+            id: req.user.id,
+            name: req.user.username,
+            displayName: req.user.displayName
+          },
+          pubKeyCredParams: [
+            {
+              type: "public-key", alg: -7 // "ES256" IANA COSE Algorithms registry
+            }
+          ],
+          attestation: 'none'
+        }
+      
+        res.send(options);
+      },
+
+      default: function () {
+        // TODO
+      }
+    });
+  });
+
+
 
 module.exports = router;

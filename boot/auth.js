@@ -96,7 +96,7 @@ module.exports = function() {
   
   passport.serializeUser(function(user, cb) {
     process.nextTick(function() {
-      cb(null, { id: user.id, username: user.username });
+      cb(null, { id: user.id, username: user.username, displayName: user.displayName });
     });
   });
 
