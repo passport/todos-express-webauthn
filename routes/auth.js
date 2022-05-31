@@ -185,26 +185,14 @@ router.post('/login',
   });
 
 
-router.post('/login/public-key',
-  function(req, res, next) {
-    console.log('RESPONSE!');
-    console.log(req.headers);
-    console.log(req.body);
-    
-    // https://www.w3.org/TR/webauthn/#registering-a-new-credential
-    
-    //var response = req.body.response;
-    //var clientData = JSON.parse(base64url.decode(response.clientDataJSON));
-    //console.log(clientData);
-    
-    next();
-  },
-  passport.authenticate('webauthn', { failureRedirect: '/login' }),
-  function(req, res, next) {
-    console.log('AUTHENTICATED!');
-    //res.redirect('/');
-    res.json({ ok: true });
-  });
+router.post('/login/public-key', passport.authenticate('webauthn', {
+  failureMessage: true,
+  failWithError: true
+}), function(req, res, next) {
+  res.json({ ok: true, location: '/' });
+}), function(err, req, res, next) {
+  res.json({ ok: false, location: '/login' });
+};
   
 router.post('/login/public-key/2',
   // TODO: 403 if not logged in

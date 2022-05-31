@@ -63,8 +63,6 @@ window.addEventListener('load', function() {
     if (!window.PublicKeyCredential) { return; }
     
     event.preventDefault();
-  
-    console.log('sign up!');
     
     return fetch('/signup/public-key', {
       method: 'POST',
@@ -74,13 +72,9 @@ window.addEventListener('load', function() {
       body: new FormData(event.target),
     })
     .then(function(response) {
-      console.log('GOT RESPOSNE!');
       return response.json();
     })
     .then(function(json) {
-      console.log(json);
-      //return;
-
       var encoder = new TextEncoder();
       
       return navigator.credentials.create({
@@ -107,7 +101,6 @@ window.addEventListener('load', function() {
       console.log('created!');
       console.log(credential);
       
-      
       return fetch('/login/public-key', {
         method: 'POST',
         headers: {
@@ -118,11 +111,10 @@ window.addEventListener('load', function() {
       });
     })
     .then(function(response) {
-      console.log('GOT RESPOSNE!');
       return response.json();
     })
     .then(function(json) {
-      console.log(json);
+      window.location.href = json.location;
     })
     .catch(function(error) {
       console.log(error);
