@@ -77,7 +77,7 @@ window.addEventListener('load', function() {
       console.log('GOT RESPOSNE!');
       return response.json();
     })
-    .then(function(json){
+    .then(function(json) {
       console.log(json);
       //return;
 
@@ -103,9 +103,26 @@ window.addEventListener('load', function() {
         }
       });
     })
-    .then(function(cred) {
+    .then(function(credential) {
       console.log('created!');
-      console.log(cred);
+      console.log(credential);
+      
+      
+      return fetch('/login/public-key', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(publicKeyCredentialToJSON(credential))
+      });
+    })
+    .then(function(response) {
+      console.log('GOT RESPOSNE!');
+      return response.json();
+    })
+    .then(function(json) {
+      console.log(json);
     })
     .catch(function(error) {
       console.log(error);
