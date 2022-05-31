@@ -1,6 +1,7 @@
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
+var multer  = require('multer');
 var cookieParser = require('cookie-parser');
 var session = require('express-session');
 var csrf = require('csurf');
@@ -25,6 +26,7 @@ app.locals.pluralize = require('pluralize');
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(multer().none());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
