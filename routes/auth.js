@@ -227,4 +227,15 @@ router.post('/login/public-key/2',
     res.json({ ok: true });
   });
 
+router.post('/logout', function(req, res, next) {
+  req.logout(function(err) {
+    if (err) { return next(err); }
+    res.redirect('/');
+  });
+});
+
+router.get('/signup', function(req, res, next) {
+  res.render('signup');
+});
+
 module.exports = router;
