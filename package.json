@@ -1,6 +1,7 @@
 {
-  "name": "express-4.x-webauthn-example",
+  "name": "todos-express-webauthn",
   "version": "0.0.0",
+  "private": true,
   "description": "Express 4.x app using Passport for authentication with Web Authentication.",
   "keywords": [
     "example",
@@ -8,33 +9,47 @@
     "passport",
     "webauthn"
   ],
-  "author": "Jared Hanson",
-  "license": "Unlicense",
-  "homepage": "https://github.com/passport/express-4.x-webauthn-example",
+  "author": {
+    "name": "Jared Hanson",
+    "email": "jaredhanson@gmail.com",
+    "url": "https://www.jaredhanson.me/"
+  },
+  "homepage": "https://github.com/passport/todos-express-webauthn",
   "repository": {
     "type": "git",
-    "url": "git://github.com/passport/express-4.x-webauthn-example.git"
+    "url": "git://github.com/passport/todos-express-webauthn.git"
   },
   "bugs": {
-    "url": "https://github.com/passport/express-4.x-webauthn-example/issues"
+    "url": "https://github.com/passport/todos-express-webauthn/issues"
   },
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/jaredhanson"
+  },
+  "license": "Unlicense",
   "scripts": {
     "start": "node ./bin/www"
   },
   "dependencies": {
     "@fidm/x509": "^1.2.1",
     "base64url": "^3.0.1",
-    "body-parser": "^1.19.0",
     "cbor": "^4.1.5",
     "connect-ensure-login": "^0.1.1",
+    "connect-sqlite3": "^0.9.13",
+    "cookie-parser": "~1.4.4",
     "cose-to-jwk": "^1.1.0",
-    "ejs": "^2.6.2",
-    "express": "^4.17.1",
-    "express-session": "^1.16.1",
+    "csurf": "^1.11.0",
+    "debug": "~2.6.9",
+    "dotenv": "^8.6.0",
+    "ejs": "~2.6.1",
+    "express": "~4.16.1",
+    "express-session": "^1.17.2",
+    "http-errors": "~1.6.3",
     "jwk-to-pem": "^2.0.1",
     "jws": "^3.2.2",
-    "morgan": "^1.9.1",
-    "passport": "^0.4.0",
+    "morgan": "~1.9.1",
+    "passport": "^0.6.0",
+    "pluralize": "^8.0.0",
     "sqlite3": "^5.0.2"
   }
 }
