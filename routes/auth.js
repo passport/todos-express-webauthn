@@ -40,18 +40,19 @@ passport.use(new Strategy(
     console.log(publicKey)
     //return;
     
-    db.run('INSERT INTO public_key_credentials (external_id, public_key) VALUES (?, ?)', [
+    var user = {
+      id: 1,
+      username: 'alice'
+    };
+    
+    db.run('INSERT INTO public_key_credentials (user_id, external_id, public_key) VALUES (?, ?, ?)', [
+      user.id,
       id,
       publicKey
     ], function(err) {
-      console.log(err);
-      
-      if (err) { return next(err); }
-    
-        
-      // TODO: Return true
+      if (err) { return cb(err); }
+      return cb(null, user);
     });
-    
   })
 );
 
