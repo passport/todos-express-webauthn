@@ -75,19 +75,25 @@ window.addEventListener('load', function() {
     })
     .then(function(response) {
       console.log('GOT RESPOSNE!');
-      return;
+      return response.json();
+    })
+    .then(function(json){
+      console.log(json);
+      //return;
+
+      var encoder = new TextEncoder();
       
-      navigator.credentials.create({
+      return navigator.credentials.create({
         publicKey: {
           rp: {
             name: 'Todos'
           },
-          x_user: {
-            id: user.id,
-            name: user.username,
-            displayName: user.displayName
+          user: {
+            id: encoder.encode(json.user.id),
+            name: json.user.username,
+            displayName: json.user.name
           },
-          challenge: new Uint8Array([21,31,105]),
+          challenge: encoder.encode(json.challenge),
           pubKeyCredParams: [
             {
               type: 'public-key',
@@ -97,8 +103,9 @@ window.addEventListener('load', function() {
         }
       });
     })
-    .then(function() {
+    .then(function(cred) {
       console.log('created!');
+      console.log(cred);
     })
     .catch(function(error) {
       console.log(error);
