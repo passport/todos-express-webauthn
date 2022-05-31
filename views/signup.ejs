@@ -1,31 +1,38 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Passport</title>
-    <link rel="stylesheet" href="/stylesheets/pico.css">
-    <link rel='stylesheet' href='/stylesheets/style.css' />
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Express • TodoMVC</title>
+		<link rel="stylesheet" href="/css/base.css">
+		<link rel="stylesheet" href="/css/index.css">
+		<link rel="stylesheet" href="/css/login.css">
     <script type="text/javascript" src="/scripts/base64url-arraybuffer.js"></script>
     <script type="text/javascript" src="/scripts/app.js"></script>
-  </head>
-  
-  <body>
-
-    <main class="container">
-      
-      <article class="grid">
-        <div>
-          <hgroup>
-            <h1>Sign up</h1>
-          </hgroup>
-          <form action="/users" method="post">
-            <input id="name" type="text" name="name" placeholder="Name">
-            <input id="username" type="text" name="username" placeholder="Username">
-            <button id="register" type="submit" class="contrast">Sign up</button>
-          </form>
-        </div>
-        <div></div>
-      </article>
-    </main>
-
-  </body>
+	</head>
+	<body>
+		<section class="prompt">
+			<h3>todos</h3>
+			<h1>Sign up</h1>
+			<form action="/signup" method="post">
+				<section>
+					<label for="name">Name</label>
+					<input id="name" name="name" type="text" placeholder="Name">
+				</section>
+				<section>
+					<label for="username">Username</label>
+					<input id="username" name="username" type="text" autocomplete="username" required>
+				</section>
+				<input type="hidden" name="_csrf" value="<%= csrfToken %>">
+				<button type="submit">Sign up</button>
+			</form>
+			<hr>
+			<p class="help">Already have an account? <a href="/login">Sign in</a></p>
+		</section>
+		<footer class="info">
+			<p>Created by <a href="https://www.jaredhanson.me">Jared Hanson</a></p>
+			<p>Part of <a href="https://todomvc.com">TodoMVC</a></p>
+			<p>Authentication powered by <a href="https://www.passportjs.org">Passport</a></p>
+		</footer>
+	</body>
 </html>
