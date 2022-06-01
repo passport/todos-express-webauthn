@@ -94,10 +94,14 @@ window.addEventListener('load', function() {
               alg: -7 // "ES256" IANA COSE Algorithms registry
             }
           ],
+          //attestation: 'none',
           authenticatorSelection: {
             //authenticatorAttachment: "platform",
             residentKey: 'required'
           },
+          //extensions: {
+          //  credProps: true
+          //}
         }
       });
     })
