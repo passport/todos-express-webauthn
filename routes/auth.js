@@ -1,7 +1,6 @@
 var express = require('express');
 var passport = require('passport');
 var Strategy = require('passport-webauthentication').Strategy;
-var MFAStrategy = require('passport-webauthentication').MFAStrategy;
 var base64url = require('base64url');
 var db = require('../db');
 
@@ -52,47 +51,9 @@ passport.use(new Strategy(
   })
 );
 
-passport.use(new MFAStrategy(
-  function verify(id, cb) {
-    console.log('WEB AUTHN VERIFY');
-    console.log(id);
-    
-    db.get('SELECT rowid AS id, * FROM public_key_credentials WHERE external_id = ?', [ id ], function(err, row) {
-      if (err) { return cb(err); }
-      if (!row) { return cb(null, false); }
-      
-      console.log(row);
-      
-      // TODO: Implement a separate callback to look up the user
-      
-      return cb(null, { name: 'John Doe'}, row.public_key);
-      
-    });
-  }, function register(user, id, publicKey, cb) {
-    console.log('MFA REGISTER WEBAUTHN!');
-    console.log(user);
-    console.log(id);
-    console.log(publicKey)
-    //return;
-    
-    db.run('INSERT INTO public_key_credentials (external_id, public_key, user_id) VALUES (?, ?, ?)', [
-      id,
-      publicKey,
-      user.id
-    ], function(err) {
-      console.log(err);
-      
-      if (err) { return cb(err); }
-      return cb(null, true);
-    });
-    
-  })
-);
-
-
 passport.serializeUser(function(user, cb) {
   process.nextTick(function() {
-    cb(null, { id: user.id, username: user.username, displayName: user.displayName });
+    cb(null, { id: user.id, username: user.username, name: user.name });
   });
 });
 
@@ -105,10 +66,9 @@ passport.deserializeUser(function(user, cb) {
 
 var router = express.Router();
 
-router.get('/login',
-  function(req, res, next){
-    res.render('login');
-  });
+router.get('/login', function(req, res, next) {
+  res.render('login');
+});
 
 router.post('/login',
   function(req, res, next){
@@ -180,37 +140,15 @@ router.post('/login',
     
   });
 
-
 router.post('/login/public-key', passport.authenticate('webauthn', {
   failureMessage: true,
   failWithError: true
 }), function(req, res, next) {
   res.json({ ok: true, location: '/' });
 }), function(err, req, res, next) {
+  if (err.status !== 401) { return next(err); }
   res.json({ ok: false, location: '/login' });
 };
-  
-router.post('/login/public-key/2',
-  // TODO: 403 if not logged in
-  function(req, res, next) {
-    console.log('RESPONSE!');
-    console.log(req.headers);
-    console.log(req.body);
-    
-    // https://www.w3.org/TR/webauthn/#registering-a-new-credential
-    
-    //var response = req.body.response;
-    //var clientData = JSON.parse(base64url.decode(response.clientDataJSON));
-    //console.log(clientData);
-    
-    next();
-  },
-  passport.authenticate('webauthn-2f', { failureRedirect: '/login' }),
-  function(req, res, next) {
-    console.log('AUTHENTICATED!');
-    //res.redirect('/');
-    res.json({ ok: true });
-  });
 
 router.post('/logout', function(req, res, next) {
   req.logout(function(err) {
@@ -224,9 +162,6 @@ router.get('/signup', function(req, res, next) {
 });
 
 router.post('/signup/public-key', function(req, res, next) {
-  console.log('sign up!');
-  console.log(req.body);
-  
   db.run('INSERT INTO users (username, name) VALUES (?, ?)', [
     req.body.username,
     req.body.name,
