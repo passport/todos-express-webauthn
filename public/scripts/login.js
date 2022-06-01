@@ -48,13 +48,18 @@ function urlencodedFormData(data){
 }
 
 
-window.onload = function() {
-  document.getElementById('login').addEventListener('click', function(e) {
+window.addEventListener('load', function() {
+  
+  document.querySelector('form').addEventListener('submit', function(event) {
+    if (!window.PublicKeyCredential) { return; }
+    
+    
+    event.preventDefault();
     
     
     console.log('login...');
-    e.preventDefault();
-    //return;
+    
+    return;
     
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
@@ -116,4 +121,4 @@ window.onload = function() {
     xhr.setRequestHeader('Accept', 'application/json');
     xhr.send(urlencodedFormData(formData));
   });
-};
+});
