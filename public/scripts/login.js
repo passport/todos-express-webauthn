@@ -59,7 +59,7 @@ window.addEventListener('load', function() {
   })
   
   
-  document.querySelector('form').addEventListener('submit', function(event) {
+  document.getElementById('siw-public-key').addEventListener('click', function(event) {
     if (!window.PublicKeyCredential) { return; }
     
     event.preventDefault();
