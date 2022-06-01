@@ -64,7 +64,7 @@ window.addEventListener('load', function() {
     
     event.preventDefault();
     
-    return fetch('/signup/public-key', {
+    return fetch('/signup/public-key/challenge', {
       method: 'POST',
       headers: {
         'Accept': 'application/json'

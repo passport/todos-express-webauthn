@@ -73,7 +73,7 @@ router.get('/signup', function(req, res, next) {
   res.render('signup');
 });
 
-router.post('/signup/public-key', function(req, res, next) {
+router.post('/signup/public-key/challenge', function(req, res, next) {
   db.run('INSERT INTO users (username, name) VALUES (?, ?)', [
     req.body.username,
     req.body.name,
