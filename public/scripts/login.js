@@ -49,6 +49,15 @@ function urlencodedFormData(data){
 
 
 window.addEventListener('load', function() {
+  console.log('load...');
+  console.log(PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable)
+  console.log(PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable())
+  
+  PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable()
+  .then(function(x) {
+    console.log(x)
+  })
+  
   
   document.querySelector('form').addEventListener('submit', function(event) {
     if (!window.PublicKeyCredential) { return; }
@@ -56,8 +65,42 @@ window.addEventListener('load', function() {
     
     event.preventDefault();
     
-    
     console.log('login...');
+    
+    var encoder = new TextEncoder();
+    
+    navigator.credentials.get({
+      publicKey: {
+        challenge: encoder.encode('1234'),
+        //allowCredentials: [
+        //  { type: 'public-key', id: base64url.decode('VjXl8fuJXIAqLg-BVrR5oeLLfee6gBGKXdMxo6xtMySugJfU2HNvTJk84T1DgFYtJDpDrwL2Bg_QM4xQwVAutA') },
+        //  { type: 'public-key', id: base64url.decode('noMuGuaaVLubAVjuS6Z2BYrrBpajYhtjnFgvSjk0IV1LJeVrupbpnw') }
+        //]
+      }
+    })
+    .then(function(credential) {
+      console.log('got');
+      console.log(credential);
+      
+      return fetch('/login/public-key', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(publicKeyCredentialToJSON(credential))
+      });
+    })
+    .then(function(response) {
+      return response.json();
+    })
+    .then(function(json) {
+      window.location.href = json.location;
+    })
+    .catch(function(error) {
+      console.log(error);
+    });
+    
     
     return;
     

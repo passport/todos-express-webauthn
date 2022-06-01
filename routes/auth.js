@@ -11,7 +11,7 @@ passport.use(new Strategy(
     console.log('WEB AUTHN VERIFY');
     console.log(id);
     
-    db.get('SELECT rowid AS id, * FROM public_key_credentials WHERE external_id = ?', [ id ], function(err, row) {
+    db.get('SELECT * FROM public_key_credentials WHERE external_id = ?', [ id ], function(err, row) {
       if (err) { return cb(err); }
       if (!row) { return cb(null, false); }
       
@@ -22,16 +22,12 @@ passport.use(new Strategy(
       
       var publicKey = row.public_key;
       
-      db.get('SELECT rowid AS id, username, name FROM users WHERE rowid = ?', [ row.user_id ], function(err, row) {
-        if (err) { return next(err); }
-
-        // TODO: Handle undefined row.
-        var user = {
-          id: row.id.toString(),
-          username: row.username,
-          displayName: row.name
-        };
-        return cb(null, user, publicKey);
+      db.get('SELECT * FROM users WHERE rowid = ?', [ row.user_id ], function(err, row) {
+        if (err) { return cb(err); }
+        if (!row) { return cb(null, false); }
+        console.log(row);
+        
+        return cb(null, row, publicKey);
       });
     });
   }, function register(id, publicKey, cb) {
