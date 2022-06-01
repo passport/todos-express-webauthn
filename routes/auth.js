@@ -1,55 +1,37 @@
 var express = require('express');
 var passport = require('passport');
-var Strategy = require('passport-webauthentication').Strategy;
+var WebAuthnStrategy = require('passport-webauthentication');
 var base64url = require('base64url');
 var db = require('../db');
 
 
-passport.use(new Strategy(
-  function verify(id, cb) {
-    console.log('WEB AUTHN VERIFY');
-    console.log(id);
-    
-    db.get('SELECT * FROM public_key_credentials WHERE external_id = ?', [ id ], function(err, row) {
+passport.use(new WebAuthnStrategy(function verify(id, cb) {
+  db.get('SELECT * FROM public_key_credentials WHERE external_id = ?', [ id ], function(err, row) {
+    if (err) { return cb(err); }
+    if (!row) { return cb(null, false); }
+    var publicKey = row.public_key;
+    db.get('SELECT * FROM users WHERE rowid = ?', [ row.user_id ], function(err, row) {
       if (err) { return cb(err); }
       if (!row) { return cb(null, false); }
-      
-      console.log(row);
-      
-      // TODO: Implement a separate callback to look up the user
-      
-      
-      var publicKey = row.public_key;
-      
-      db.get('SELECT * FROM users WHERE rowid = ?', [ row.user_id ], function(err, row) {
-        if (err) { return cb(err); }
-        if (!row) { return cb(null, false); }
-        console.log(row);
-        
-        return cb(null, row, publicKey);
-      });
+      return cb(null, row, publicKey);
     });
-  }, function register(id, publicKey, cb) {
-    console.log('REGISTER WEBAUTHN!');
-    console.log(id);
-    console.log(publicKey)
-    //return;
-    
-    var user = {
-      id: 1,
-      username: 'alice'
-    };
-    
-    db.run('INSERT INTO public_key_credentials (user_id, external_id, public_key) VALUES (?, ?, ?)', [
-      user.id,
-      id,
-      publicKey
-    ], function(err) {
-      if (err) { return cb(err); }
-      return cb(null, user);
-    });
-  })
-);
+  });
+}, function register(id, publicKey, cb) {
+  // FIXME: Make user an argument to this function
+  var user = {
+    id: 1,
+    username: 'alice'
+  };
+  
+  db.run('INSERT INTO public_key_credentials (user_id, external_id, public_key) VALUES (?, ?, ?)', [
+    user.id,
+    id,
+    publicKey
+  ], function(err) {
+    if (err) { return cb(err); }
+    return cb(null, user);
+  });
+}));
 
 passport.serializeUser(function(user, cb) {
   process.nextTick(function() {
@@ -69,76 +51,6 @@ var router = express.Router();
 router.get('/login', function(req, res, next) {
   res.render('login');
 });
-
-router.post('/login',
-  function(req, res, next){
-    console.log('LOGIN');
-    console.log(req.headers);
-    console.log(req.body)
-    
-    function challenge(keys) {
-      res.format({
-        'application/json': function () {
-          var options = {
-            challenge: '5678', // TODO: Make this random,
-          };
-          
-          if (keys) {
-            options.allowCredentials = [];
-            
-            keys.forEach(function(row, i) {
-              var key = {
-                type: 'public-key',
-                id: row.external_id
-                // TODO: put transports in
-                //transports: ['usb', 'nfc', 'ble']
-                //transports: ['internal']
-              };
-        
-              options.allowCredentials.push(key);
-            });
-          }
-          
-          console.log(options)
-          
-          res.send(options);
-        },
-
-        default: function () {
-          // TODO
-        }
-      });
-    }
-    
-    
-    var username = req.body.username;
-    if (!username) {
-      // challenge for client-side discoverable keys (aka resident keys)
-      challenge();
-    } else {
-      console.log('TODO: lookupu username');
-      
-      db.get('SELECT rowid AS id FROM users WHERE username = ?', [ username ], function(err, row) {
-        if (err) { return cb(err); }
-        
-        // TODO: Handle undefined row
-        //if (!row) { return cb(null, false, { message: 'Incorrect username or password.' }); }
-        
-        console.log('FOUND USER');
-        console.log(row);
-        
-        db.all('SELECT rowid as id, * FROM public_key_credentials WHERE user_id = ?', [ row.id ], function(err, rows) {
-          if (err) { return next(err); }
-          
-          console.log('GOT KEYS');
-          console.log(rows);
-          
-          challenge(rows);
-        });
-      });
-    }
-    
-  });
 
 router.post('/login/public-key', passport.authenticate('webauthn', {
   failureMessage: true,
