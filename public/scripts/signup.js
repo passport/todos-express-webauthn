@@ -77,6 +77,7 @@ window.addEventListener('load', function() {
     .then(function(json) {
       var encoder = new TextEncoder();
       
+      // https://chromium.googlesource.com/chromium/src/+/master/content/browser/webauth/uv_preferred.md
       return navigator.credentials.create({
         publicKey: {
           rp: {
@@ -96,6 +97,7 @@ window.addEventListener('load', function() {
           ],
           //attestation: 'none',
           authenticatorSelection: {
+            userVerification: 'discouraged',
             //authenticatorAttachment: "platform",
             residentKey: 'required'
           },
