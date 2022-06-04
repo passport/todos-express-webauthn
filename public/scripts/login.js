@@ -64,16 +64,30 @@ window.addEventListener('load', function() {
     
     event.preventDefault();
     
-    var encoder = new TextEncoder();
-    
-    navigator.credentials.get({
-      publicKey: {
-        challenge: encoder.encode('1234'),
-        //allowCredentials: [
-        //  { type: 'public-key', id: base64url.decode('VjXl8fuJXIAqLg-BVrR5oeLLfee6gBGKXdMxo6xtMySugJfU2HNvTJk84T1DgFYtJDpDrwL2Bg_QM4xQwVAutA') },
-        //  { type: 'public-key', id: base64url.decode('noMuGuaaVLubAVjuS6Z2BYrrBpajYhtjnFgvSjk0IV1LJeVrupbpnw') }
-        //]
+    return fetch('/login/public-key/challenge', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json'
       }
+    })
+    .then(function(response) {
+      return response.json();
+    })
+    .then(function(json) {
+      console.log('CHALLENGE JSON');
+      console.log(json);
+      
+      var encoder = new TextEncoder();
+    
+      return navigator.credentials.get({
+        publicKey: {
+          challenge: base64url.decode(json.challenge),
+          //allowCredentials: [
+          //  { type: 'public-key', id: base64url.decode('VjXl8fuJXIAqLg-BVrR5oeLLfee6gBGKXdMxo6xtMySugJfU2HNvTJk84T1DgFYtJDpDrwL2Bg_QM4xQwVAutA') },
+          //  { type: 'public-key', id: base64url.decode('noMuGuaaVLubAVjuS6Z2BYrrBpajYhtjnFgvSjk0IV1LJeVrupbpnw') }
+          //]
+        }
+      });
     })
     .then(function(credential) {
       console.log(credential);

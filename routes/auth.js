@@ -1,11 +1,14 @@
 var express = require('express');
 var passport = require('passport');
 var WebAuthnStrategy = require('passport-webauthentication');
+var SessionChallengeStore = require('passport-webauthentication').SessionChallengeStore;
 var base64url = require('base64url');
 var db = require('../db');
 
 
-passport.use(new WebAuthnStrategy(function verify(id, cb) {
+var store = new SessionChallengeStore();
+
+passport.use(new WebAuthnStrategy({ store: store }, function verify(id, cb) {
   db.get('SELECT * FROM public_key_credentials WHERE external_id = ?', [ id ], function(err, row) {
     if (err) { return cb(err); }
     if (!row) { return cb(null, false); }
@@ -61,6 +64,17 @@ router.post('/login/public-key', passport.authenticate('webauthn', {
   if (err.status !== 401) { return next(err); }
   res.json({ ok: false, location: '/login' });
 };
+
+router.post('/login/public-key/challenge', function(req, res, next) {
+  store.challenge(req, function(err, challenge) {
+    console.log('GOT CHALLENGE!');
+    console.log(err);
+    console.log(challenge);
+    
+    if (err) { return next(err); }
+    res.json({ challenge: base64url.encode(challenge) });
+  })
+});
 
 router.post('/logout', function(req, res, next) {
   req.logout(function(err) {
