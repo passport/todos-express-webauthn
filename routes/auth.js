@@ -10,8 +10,6 @@ var db = require('../db');
 var store = new SessionChallengeStore();
 
 passport.use(new WebAuthnStrategy({ store: store }, function verify(id, userHandle, cb) {
-  // TODO: verify user handle
-  
   db.get('SELECT * FROM public_key_credentials WHERE external_id = ?', [ id ], function(err, row) {
     if (err) { return cb(err); }
     if (!row) { return cb(null, false); }
@@ -19,6 +17,9 @@ passport.use(new WebAuthnStrategy({ store: store }, function verify(id, userHand
     db.get('SELECT * FROM users WHERE rowid = ?', [ row.user_id ], function(err, row) {
       if (err) { return cb(err); }
       if (!row) { return cb(null, false); }
+      if (Buffer.compare(row.handle, userHandle) != 0) {
+        return cb(null, false);
+      }
       return cb(null, row, publicKey);
     });
   });
