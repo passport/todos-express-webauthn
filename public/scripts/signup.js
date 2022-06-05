@@ -75,8 +75,6 @@ window.addEventListener('load', function() {
       return response.json();
     })
     .then(function(json) {
-      var encoder = new TextEncoder();
-      
       // https://chromium.googlesource.com/chromium/src/+/master/content/browser/webauth/uv_preferred.md
       return navigator.credentials.create({
         publicKey: {
@@ -84,11 +82,11 @@ window.addEventListener('load', function() {
             name: 'Todos'
           },
           user: {
-            id: encoder.encode(json.user.id),
-            name: json.user.username,
-            displayName: json.user.name
+            id: base64url.decode(json.user.id),
+            name: json.user.name,
+            displayName: json.user.displayName
           },
-          challenge: encoder.encode(json.challenge),
+          challenge: base64url.decode(json.challenge),
           pubKeyCredParams: [
             {
               type: 'public-key',
