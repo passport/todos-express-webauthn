@@ -8,7 +8,9 @@ var db = require('../db');
 
 var store = new SessionChallengeStore();
 
-passport.use(new WebAuthnStrategy({ store: store }, function verify(id, cb) {
+passport.use(new WebAuthnStrategy({ store: store }, function verify(id, userHandle, cb) {
+  // TODO: verify user handle
+  
   db.get('SELECT * FROM public_key_credentials WHERE external_id = ?', [ id ], function(err, row) {
     if (err) { return cb(err); }
     if (!row) { return cb(null, false); }
