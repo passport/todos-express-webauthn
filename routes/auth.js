@@ -69,13 +69,9 @@ router.post('/login/public-key', passport.authenticate('webauthn', {
 
 router.post('/login/public-key/challenge', function(req, res, next) {
   store.challenge(req, function(err, challenge) {
-    console.log('GOT CHALLENGE!');
-    console.log(err);
-    console.log(challenge);
-    
     if (err) { return next(err); }
     res.json({ challenge: base64url.encode(challenge) });
-  })
+  });
 });
 
 router.post('/logout', function(req, res, next) {

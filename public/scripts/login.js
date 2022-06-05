@@ -74,11 +74,6 @@ window.addEventListener('load', function() {
       return response.json();
     })
     .then(function(json) {
-      console.log('CHALLENGE JSON');
-      console.log(json);
-      
-      var encoder = new TextEncoder();
-    
       return navigator.credentials.get({
         publicKey: {
           challenge: base64url.decode(json.challenge),
