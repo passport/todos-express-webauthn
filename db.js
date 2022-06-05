@@ -11,7 +11,8 @@ db.serialize(function() {
     username TEXT UNIQUE, \
     hashed_password BLOB, \
     salt BLOB, \
-    name TEXT \
+    name TEXT, \
+    handle BLOB UNIQUE \
   )");
   
   db.run("CREATE TABLE IF NOT EXISTS public_key_credentials ( \

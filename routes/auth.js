@@ -3,6 +3,7 @@ var passport = require('passport');
 var WebAuthnStrategy = require('passport-webauthentication');
 var SessionChallengeStore = require('passport-webauthentication').SessionChallengeStore;
 var base64url = require('base64url');
+var uuid = require('uuid').v4;
 var db = require('../db');
 
 
@@ -21,20 +22,26 @@ passport.use(new WebAuthnStrategy({ store: store }, function verify(id, userHand
       return cb(null, row, publicKey);
     });
   });
-}, function register(id, publicKey, cb) {
-  // FIXME: Make user an argument to this function
-  var user = {
-    id: 1,
-    username: 'alice'
-  };
-  
-  db.run('INSERT INTO public_key_credentials (user_id, external_id, public_key) VALUES (?, ?, ?)', [
-    user.id,
-    id,
-    publicKey
+}, function register(user, id, publicKey, cb) {
+  db.run('INSERT INTO users (username, name, handle) VALUES (?, ?, ?)', [
+    user.name,
+    user.displayName,
+    user.id
   ], function(err) {
     if (err) { return cb(err); }
-    return cb(null, user);
+    var newUser = {
+      id: this.lastID,
+      username: user.name,
+      name: user.displayName
+    };
+    db.run('INSERT INTO public_key_credentials (user_id, external_id, public_key) VALUES (?, ?, ?)', [
+      newUser.id,
+      id,
+      publicKey
+    ], function(err) {
+      if (err) { return cb(err); }
+      return cb(null, newUser);
+    });
   });
 }));
 
@@ -86,18 +93,17 @@ router.get('/signup', function(req, res, next) {
 });
 
 router.post('/signup/public-key/challenge', function(req, res, next) {
-  db.run('INSERT INTO users (username, name) VALUES (?, ?)', [
-    req.body.username,
-    req.body.name,
-  ], function(err) {
+  var handle = Buffer.alloc(16);
+  handle = uuid({}, handle);
+  var user = {
+    id: handle,
+    name: req.body.username,
+    displayName: req.body.name
+  };
+  store.challenge(req, { user: user }, function(err, challenge) {
     if (err) { return next(err); }
-    var user = {
-      id: this.lastID,
-      username: req.body.username,
-      name: req.body.name
-    };
-    var challenge = '1234'; // TODO: Make this random,
-    res.json({ user: user, challenge: challenge });
+    user.id = base64url.encode(user.id);
+    res.json({ user: user, challenge: base64url.encode(challenge) });
   });
 });
 
