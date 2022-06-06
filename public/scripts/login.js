@@ -1,63 +1,4 @@
-function _arrayBufferToBase64( buffer ) {
-    var binary = '';
-    var bytes = new Uint8Array( buffer );
-    var len = bytes.byteLength;
-    for (var i = 0; i < len; i++) {
-        binary += String.fromCharCode( bytes[ i ] );
-    }
-    return window.btoa( binary );
-}
-
-function publicKeyCredentialToJSON(cred) {
-  if (cred instanceof Array) {
-      var arr = [];
-      for(var i of cred)
-          arr.push(publicKeyCredentialToJSON(i));
-
-      return arr
-  }
-
-  if (cred instanceof ArrayBuffer) {
-    return base64url.encode(cred)
-      //return _arrayBufferToBase64(cred)
-  }
-
-  if (cred instanceof Object) {
-      let obj = {};
-
-      for (var key in cred) {
-          obj[key] = publicKeyCredentialToJSON(cred[key])
-      }
-
-      return obj
-  }
-
-  return cred
-}
-
-// https://stackoverflow.com/questions/7542586/new-formdata-application-x-www-form-urlencoded
-function urlencodedFormData(data){
-  var s = '';
-  function encode(s) { return encodeURIComponent(s).replace(/%20/g,'+'); }
-  for (var pair of data.entries()) {
-    if (typeof pair[1]=='string') {
-      s += (s ? '&' : '') + encode(pair[0]) + '=' + encode(pair[1]);
-    }
-  }
-  return s;
-}
-
-
 window.addEventListener('load', function() {
-  console.log('load...');
-  console.log(PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable)
-  console.log(PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable())
-  
-  PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable()
-  .then(function(x) {
-    console.log(x)
-  })
-  
   
   document.getElementById('siw-public-key').addEventListener('click', function(event) {
     if (!window.PublicKeyCredential) { return; }
@@ -85,7 +26,18 @@ window.addEventListener('load', function() {
       });
     })
     .then(function(credential) {
-      console.log(credential);
+      var body = {
+        id: credential.id,
+        response: {
+          authenticatorData: base64url.encode(credential.response.authenticatorData),
+          signature: base64url.encode(credential.response.signature),
+          userHandle: credential.response.userHandle ? base64url.encode(credential.response.userHandle) : null,
+          clientDataJSON: base64url.encode(credential.response.clientDataJSON)
+        }
+      };
+      if (credential.authenticatorAttachment) {
+        body.authenticatorAttachment = credential.authenticatorAttachment;
+      }
       
       return fetch('/login/public-key', {
         method: 'POST',
@@ -93,7 +45,7 @@ window.addEventListener('load', function() {
           'Content-Type': 'application/json',
           'Accept': 'application/json'
         },
-        body: JSON.stringify(publicKeyCredentialToJSON(credential))
+        body: JSON.stringify(body)
       });
     })
     .then(function(response) {
