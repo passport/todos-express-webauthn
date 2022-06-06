@@ -71,6 +71,8 @@ router.post('/login/public-key', passport.authenticate('webauthn', {
 }), function(req, res, next) {
   res.json({ ok: true, location: '/' });
 }, function(err, req, res, next) {
+  var cxx = Math.floor(err.status / 100);
+  if (cxx != 4) { return next(err); }
   res.json({ ok: false, location: '/login' });
 });
 
