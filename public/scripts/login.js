@@ -29,10 +29,10 @@ window.addEventListener('load', function() {
       var body = {
         id: credential.id,
         response: {
+          clientDataJSON: base64url.encode(credential.response.clientDataJSON),
           authenticatorData: base64url.encode(credential.response.authenticatorData),
           signature: base64url.encode(credential.response.signature),
-          userHandle: credential.response.userHandle ? base64url.encode(credential.response.userHandle) : null,
-          clientDataJSON: base64url.encode(credential.response.clientDataJSON)
+          userHandle: credential.response.userHandle ? base64url.encode(credential.response.userHandle) : null
         }
       };
       if (credential.authenticatorAttachment) {

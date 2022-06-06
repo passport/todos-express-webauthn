@@ -49,8 +49,8 @@ window.addEventListener('load', function() {
     .then(function(credential) {
       var body = {
         response: {
-          attestationObject: base64url.encode(credential.response.attestationObject),
-          clientDataJSON: base64url.encode(credential.response.clientDataJSON)
+          clientDataJSON: base64url.encode(credential.response.clientDataJSON),
+          attestationObject: base64url.encode(credential.response.attestationObject)
         }
       };
       if (credential.response.getTransports) {
