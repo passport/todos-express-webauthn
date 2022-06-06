@@ -1,62 +1,3 @@
-function _arrayBufferToBase64( buffer ) {
-    var binary = '';
-    var bytes = new Uint8Array( buffer );
-    var len = bytes.byteLength;
-    for (var i = 0; i < len; i++) {
-        binary += String.fromCharCode( bytes[ i ] );
-    }
-    return window.btoa( binary );
-}
-
-function publicKeyCredentialToJSON(cred) {
-  if (cred instanceof Array) {
-      var arr = [];
-      for(var i of cred)
-          arr.push(publicKeyCredentialToJSON(i));
-
-      return arr
-  }
-
-  if (cred instanceof ArrayBuffer) {
-    return base64url.encode(cred)
-      //return _arrayBufferToBase64(cred)
-  }
-
-  if (cred instanceof Object) {
-      let obj = {};
-
-      for (var key in cred) {
-          obj[key] = publicKeyCredentialToJSON(cred[key])
-      }
-      
-      if (cred.getTransports) {
-        obj.transports = cred.getTransports();
-      }
-      
-      if (cred.getClientExtensionResults) {
-        obj.clientExtensionResults = cred.getClientExtensionResults();
-      }
-
-      return obj
-  }
-
-  return cred
-}
-
-
-// https://stackoverflow.com/questions/7542586/new-formdata-application-x-www-form-urlencoded
-function urlencodedFormData(data){
-  var s = '';
-  function encode(s) { return encodeURIComponent(s).replace(/%20/g,'+'); }
-  for (var pair of data.entries()) {
-    if (typeof pair[1]=='string') {
-      s += (s ? '&' : '') + encode(pair[0]) + '=' + encode(pair[1]);
-    }
-  }
-  return s;
-}
-
-
 window.addEventListener('load', function() {
   
   document.querySelector('form').addEventListener('submit', function(event) {
@@ -106,7 +47,15 @@ window.addEventListener('load', function() {
       });
     })
     .then(function(credential) {
-      console.log(credential);
+      var body = {
+        response: {
+          attestationObject: base64url.encode(credential.response.attestationObject),
+          clientDataJSON: base64url.encode(credential.response.clientDataJSON)
+        }
+      };
+      if (credential.response.getTransports) {
+        body.response.transports = credential.response.getTransports();
+      }
       
       return fetch('/login/public-key', {
         method: 'POST',
@@ -114,7 +63,7 @@ window.addEventListener('load', function() {
           'Content-Type': 'application/json',
           'Accept': 'application/json'
         },
-        body: JSON.stringify(publicKeyCredentialToJSON(credential))
+        body: JSON.stringify(body)
       });
     })
     .then(function(response) {
