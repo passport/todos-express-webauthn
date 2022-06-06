@@ -2,7 +2,7 @@
   "name": "todos-express-webauthn",
   "version": "0.0.0",
   "private": true,
-  "description": "Express 4.x app using Passport for authentication with Web Authentication.",
+  "description": "Todo app using Express and Passport for passwordless sign in with biometrics or security keys.",
   "keywords": [
     "example",
     "express",
