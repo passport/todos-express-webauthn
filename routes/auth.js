@@ -12,13 +12,13 @@ var store = new SessionChallengeStore();
 passport.use(new WebAuthnStrategy({ store: store }, function verify(id, userHandle, cb) {
   db.get('SELECT * FROM public_key_credentials WHERE external_id = ?', [ id ], function(err, row) {
     if (err) { return cb(err); }
-    if (!row) { return cb(null, false); }
+    if (!row) { return cb(null, false, { message: 'Invalid key. '}); }
     var publicKey = row.public_key;
     db.get('SELECT * FROM users WHERE rowid = ?', [ row.user_id ], function(err, row) {
       if (err) { return cb(err); }
-      if (!row) { return cb(null, false); }
+      if (!row) { return cb(null, false, { message: 'Invalid key. '}); }
       if (Buffer.compare(row.handle, userHandle) != 0) {
-        return cb(null, false);
+        return cb(null, false, { message: 'Invalid key. '});
       }
       return cb(null, row, publicKey);
     });
@@ -70,10 +70,9 @@ router.post('/login/public-key', passport.authenticate('webauthn', {
   failWithError: true
 }), function(req, res, next) {
   res.json({ ok: true, location: '/' });
-}), function(err, req, res, next) {
-  if (err.status !== 401) { return next(err); }
+}, function(err, req, res, next) {
   res.json({ ok: false, location: '/login' });
-};
+});
 
 router.post('/login/public-key/challenge', function(req, res, next) {
   store.challenge(req, function(err, challenge) {
