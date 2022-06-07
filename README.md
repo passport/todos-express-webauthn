@@ -25,7 +25,7 @@ Navigate to [`http://localhost:3000`](http://localhost:3000).
 ## Overview
 
 This app illustrates how to build a todo app with sign in functionality using
-Express, Passport, and the [`passport-fido2-webauthn`](https://github.com/jaredhanson/passport-webauthn)
+Express, Passport, and the [`passport-fido2-webauthn`](https://www.passportjs.org/packages/passport-fido2-webauthn/)
 strategy.
 
 This app is a traditional web application, in which application logic and data
