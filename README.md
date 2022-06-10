@@ -1,7 +1,7 @@
 # todos-express-webauthn
 
 This app illustrates how to use [Passport](https://www.passportjs.org/) with
-[Express](https://expressjs.com/) to sign users in with biometrics or a security
+[Express](https://expressjs.com/) to sign users in with a passkey or a security
 key.  Use this example as a starting point for your own web applications.
 
 ## Quick Start
@@ -38,7 +38,7 @@ templates, and are styled using vanilla CSS.
 
 When a user first arrives at this app, they are prompted to sign in.  To sign
 in, the [Web Authentication](https://www.w3.org/TR/webauthn-2/) API is used to
-verify the user's identity using a security key.  Once authenticated, a login
+prompt the user for their passkey or security key.  Once authenticated, a login
 session is established and maintained between the server and the user's browser
 with a cookie.
 
