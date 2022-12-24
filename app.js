@@ -36,6 +36,7 @@ app.use(session({
   store: new SQLiteStore({ db: 'sessions.db', dir: './var/db' })
 }));
 //app.use(csrf());
+app.enable('trust proxy')
 app.use(passport.authenticate('session'));
 app.use(function(req, res, next) {
   var msgs = req.session.messages || [];
