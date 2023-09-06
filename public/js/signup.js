@@ -41,9 +41,10 @@ window.addEventListener('load', function() {
           ],
           //attestation: 'none',
           authenticatorSelection: {
-            userVerification: 'discouraged',
-            //authenticatorAttachment: "platform",
-            residentKey: 'required'
+            //authenticatorAttachment: 'platform', // "platform" | "cross-platform"
+            //residentKey: 'discouraged', // "discouraged" | "preferred" | "required"
+            //requireResidentKey: false, // true | false (default)
+            userVerification: 'preferred', // "required" | "preferred" (default) | "discouraged"
           },
           //extensions: {
           //  credProps: true
