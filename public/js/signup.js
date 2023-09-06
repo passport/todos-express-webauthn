@@ -17,6 +17,7 @@ window.addEventListener('load', function() {
     })
     .then(function(json) {
       // https://chromium.googlesource.com/chromium/src/+/master/content/browser/webauth/uv_preferred.md
+      // https://chromium.googlesource.com/chromium/src/+/main/content/browser/webauth/pub_key_cred_params.md
       return navigator.credentials.create({
         publicKey: {
           rp: {
@@ -31,7 +32,11 @@ window.addEventListener('load', function() {
           pubKeyCredParams: [
             {
               type: 'public-key',
-              alg: -7 // "ES256" IANA COSE Algorithms registry
+              alg: -7 // ES256
+            },
+            {
+              type: 'public-key',
+              alg: -257 // RS256
             }
           ],
           //attestation: 'none',
